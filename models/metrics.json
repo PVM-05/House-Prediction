@@ -1,0 +1,24 @@
+{
+  "models": [
+    {
+      "model": "Ridge (Baseline)",
+      "rmse_log": 0.6657,
+      "r2_score": 0.6208,
+      "mae_billion_vnd": 10.6555,
+      "rmse_billion_vnd": 120.0114,
+      "mape_percent": 62.77,
+      "train_samples": 37179,
+      "test_samples": 9295
+    },
+    {
+      "model": "LightGBM Regressor",
+      "rmse_log": 0.4552,
+      "r2_score": 0.8227,
+      "mae_billion_vnd": 5.0502,
+      "rmse_billion_vnd": 14.4058,
+      "mape_percent": 39.84,
+      "train_samples": 37179,
+      "test_samples": 9295
+    }
+  ]
+}
