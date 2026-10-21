@@ -278,30 +278,14 @@ Bộ kiểm thử tự động `tests/test_pipelines.py` được thực thi b�
 | 8 | `test_train_serving_consistency_and_inference` | Kiểm tra đồng nhất pipeline tiền xử lý giữa huấn luyện và dự báo | **PASSED** | 0,82s |
 | 9 | `test_evaluation_diagnostics_and_residual_plot` | Kiểm tra sự tồn tại của các biểu đồ chẩn đoán mô hình | **PASSED** | 0,02s |
 | 10 | `test_pipeline_summary_metrics_and_charts` | Kiểm tra bộ tóm tắt số liệu 7 mục và bộ 7 biểu đồ phân giải cao | **PASSED** | 1,98s |
-| 11 | `test_smart_query_engine` | Kiểm tra trợ lý truy vấn thông minh Smart Query & Smart Answer 5 lớp | **PASSED** | 0,95s |
-| **Tổng cộng** | **11 ca kiểm thử tự động** | **Độ bao phủ toàn diện 100% các tầng từ ETL đến Smart Explorer** | **11/11 PASSED** | **5,46s** |
+| **Tổng cộng** | **10 ca kiểm thử tự động** | **Độ bao phủ toàn diện 100% các tầng từ Raw Ingestion đến Model Serving** | **10/10 PASSED** | **4,73s** |
 
-### 5.3. Ứng Dụng Phục Vụ Người Dùng Trên Nền Streamlit & Phân Hệ Smart Explorer
-Giao diện ứng dụng Streamlit được nâng cấp toàn diện thành 5 Phân hệ chính, tích hợp tính năng đột phá **Smart Data Explorer** nhằm dân chủ hóa việc tiếp cận dữ liệu lớn cho người dùng đại chúng:
-
-#### 5.3.1. Phân Hệ Smart Data Explorer (Smart Query & Smart Answer 5 Lớp)
-Người dùng không cần biết lập trình, không cần hiểu cú pháp SQL hay cấu trúc schema phức tạp vẫn có thể khai thác sâu sắc kho dữ liệu 300.295 bất động sản Tầng Vàng thông qua kiến trúc 5 lớp:
-1. **Lớp 1 (Natural Language Input):** Tiếp nhận câu hỏi tiếng Việt tự nhiên kết hợp bộ lọc có điều kiện (tỉnh thành, khoảng giá, diện tích, loại hình) và hàng nút gợi ý câu hỏi nhanh (Chips) như: *"Tỉnh nào có giá trung vị cao nhất?"*, *"Giá nhà thay đổi theo diện tích thế nào?"*, *"So sánh số lượng tin theo tỉnh"*, *"Kiểm tra chất lượng dữ liệu Gold"*.
-2. **Lớp 2 (Intent Detection & Contextual Memory):** Nhận diện mục tiêu phân tích dựa trên đối sánh ngữ nghĩa và từ điển chuẩn hóa; hỗ trợ hỏi tiếp theo ngữ cảnh (*Conversational Follow-up*, ví dụ: *"còn TP. Hồ Chí Minh thì sao?"*).
-3. **Lớp 3 (Query Planning):** Lập kế hoạch truy vấn tham số hóa an toàn, tự động xác định các cột cần chiếu, điều kiện lọc và các hàm tổng hợp thống kê kháng nhiễu (Median P50, IQR, Quantiles).
-4. **Lớp 4 (Data Validation & Execution):** Thực thi trực tiếp trên tập dữ liệu thật của Tầng Vàng trong thời gian mili-giây ($< 200\text{ ms}$), cam kết **100% không suy đoán sai lệch (Zero Hallucination)**.
-5. **Lớp 5 (Smart Answer Generator - Đầu ra chuẩn 5 phần):**
-   - **Phần A (Kết luận trực tiếp):** Trả lời đúng trọng tâm câu hỏi bằng 1–3 câu súc tích với con số mấu chốt.
-   - **Phần B (Bảng số liệu & Biểu đồ tự chọn):** Tự động chọn biểu đồ cột so sánh, biểu đồ đường xu hướng hoặc bảng số liệu chi tiết tùy theo bản chất câu hỏi.
-   - **Phần C (Phương pháp tính):** Ghi rõ việc sử dụng giá trị Trung vị (Median) để triệt tiêu ảnh hưởng của tin ảo, đơn vị tiền tệ (Tỷ VNĐ, Triệu/m²) và số bản ghi hợp lệ.
-   - **Phần D (Nguồn dữ liệu & Độ tin cậy):** Xác nhận tầng dữ liệu nguồn (Gold Parquet), thời điểm cập nhật và cảnh báo nếu cỡ mẫu ở khu vực đó $< 500$ tin.
-   - **Phần E (Gợi ý phân tích tiếp theo):** Đề xuất 2–3 hướng đào sâu ngữ cảnh với nút bấm một chạm trực tiếp.
-
-#### 5.3.2. Bốn Phân Hệ Báo Cáo Kỹ Thuật Bổ Trợ
-- **Tab 1: Kiến Trúc & Tích Hợp Dữ Liệu Lớn:** Sơ đồ Medallion Lakehouse 6 tầng, quy mô kho nguồn 3.5M dòng trên 10 shards, lưu lượng qua các tầng.
-- **Tab 2: Quản Lý Chất Lượng & Biến Đổi Dữ Liệu:** Trực quan hóa phễu lưu lượng 2 panel, biểu đồ tỷ lệ khuyết thiếu 3 nhóm màu, bảng 5 số thống kê trước/sau lọc ngoại lệ.
-- **Tab 3: Phân Tích Thị Trường Bất Động Sản (EDA):** Bộ 4 biểu đồ EDA chuẩn học thuật phân tích địa lý, phân khúc loại hình, đơn giá theo phòng ngủ và ma trận tương quan.
-- **Tab 4: Hiệu Năng Xử Lý, Lưu Trữ & Định Giá Trực Tuyến:** Dashboard giám sát pipeline, hiệu quả nén Parquet Snappy, và biểu mẫu định giá tự động bằng mô hình LightGBM (bảo đảm tính nhất quán Train-Serving).
+### 5.3. Ứng Dụng Phục Vụ Người Dùng Trên Nền Streamlit (4 Phân Hệ Chuẩn Học Thuật)
+Giao diện ứng dụng Streamlit được cấu trúc hóa toàn diện thành 4 Phân hệ chính phục vụ hội đồng bảo vệ và người dùng phân tích:
+- **Tab 1: Kiến Trúc & Tích Hợp Dữ Liệu Lớn:** Trực quan hóa sơ đồ kiến trúc Medallion Lakehouse 6 tầng, quy mô kho nguồn 3.5M dòng trên 10 shards, các chỉ số lưu lượng và tỷ lệ giữ lại qua các tầng Bronze, Silver, Gold.
+- **Tab 2: Quản Lý Chất Lượng & Biến Đổi Dữ Liệu:** Trực quan hóa phễu lưu lượng 2 panel (số lượng và tỷ lệ giữ lại), biểu đồ tỷ lệ khuyết thiếu phân 3 nhóm màu cảnh báo, bảng 5 số thống kê trước/sau lọc ngoại lệ (Mean, Median, Std, Min, Max).
+- **Tab 3: Phân Tích Thị Trường Bất Động Sản (EDA):** Bộ 4 biểu đồ EDA chuẩn học thuật phân tích địa lý (giá trung vị theo tỉnh thành), phân khúc loại hình, đơn giá theo phòng ngủ và ma trận tương quan đa biến.
+- **Tab 4: Hiệu Năng Xử Lý, Lưu Trữ & Định Giá Trực Tuyến:** Dashboard giám sát pipeline, hiệu quả nén Parquet Snappy, dung lượng SQLite CSDL Serving và biểu mẫu định giá tự động bằng mô hình LightGBM (bảo đảm tính nhất quán Train-Serving).
 
 ---
 

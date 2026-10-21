@@ -22,17 +22,17 @@ if not "%~1"=="" (
 cls
 echo ===============================================================================
 echo   HE THONG TICH HOP ^& PHAN TICH DU LIEU LON BAT DONG SAN VIET NAM
-echo   Medallion Lakehouse (PySpark) + Machine Learning + Streamlit Smart Explorer
+echo   Medallion Lakehouse (PySpark) + Machine Learning + Streamlit Dashboard
 echo ===============================================================================
 echo.
 echo   Chon chuc nang can thuc thi:
 echo.
-echo   [1] Khoi chay Giao dien Web Streamlit (Smart Data Explorer ^& Dashboard)
+echo   [1] Khoi chay Giao dien Web Streamlit (4 Phan He Dashboard Hoc Thuat)
 echo   [2] Chay Toan bo Pipeline 6 Tang (Ingest -^> Silver -^> Gold -^> DB -^> ML -^> Eval)
 echo   [3] Chay Buoc PySpark ETL (Lam sach Silver ^& Trich xuat dac trung Gold)
 echo   [4] Chay Buoc Nap Co So Du Lieu Serving (PostgreSQL / SQLite Fallback)
 echo   [5] Chay Huan Luyen Mo Hinh Machine Learning (Ridge Baseline ^& LightGBM)
-echo   [6] Chay Bo Kiem Thu Tu Dong Toan Dien (Pytest 11/11 Test Cases)
+echo   [6] Chay Bo Kiem Thu Tu Dong Toan Dien (Pytest 10/10 Test Cases)
 echo   [7] Tao Bo So Lieu Tom Tat ^& 7 Bieu Do Phan Tich Chuan Hoc Thuat
 echo   [8] Xuat 10,000 Dong Du Lieu Mau Ra File Excel (.xlsx) va CSV (.csv)
 echo   [0] Thoat
@@ -101,7 +101,7 @@ goto MENU
 
 :RUN_TEST
 echo.
-echo [*] Dang chay bo kiem thu tu dong 11 bai kiem thu (Pytest)...
+echo [*] Dang chay bo kiem thu tu dong 10 bai kiem thu (Pytest)...
 python -m pytest tests/test_pipelines.py -v
 echo.
 pause

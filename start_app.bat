@@ -6,7 +6,7 @@ if exist "C:\Program Files\Java\jdk-17" (
 cd /d "%~dp0"
 
 echo ===============================================================================
-echo   HOUSE PREDICTION - SMART DATA EXPLORER ^& MARKET ANALYTICS
+echo   HOUSE PREDICTION - BIG DATA LAKEHOUSE ^& MARKET ANALYTICS
 echo   He Thong Tich Hop ^& Phan Tich Du Lieu Lon Bat Dong San Viet Nam
 echo ===============================================================================
 echo.

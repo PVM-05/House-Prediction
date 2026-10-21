@@ -26,7 +26,6 @@ from src.ml.common import (
     build_location_catalog,
     prepare_inference_dataframe
 )
-from src.serving.smart_query_engine import SmartQueryEngine
 
 # Cấu hình trang
 st.set_page_config(
@@ -172,171 +171,13 @@ with st.sidebar:
     st.markdown("---")
     st.caption("Dự án Tích Hợp và Phân Tích Dữ Liệu Lớn. Toàn bộ số liệu được tính toán tự động trực tiếp từ dữ liệu hồ lưu trữ thực tế.")
 
-# Phân hệ chính: 5 Tabs (Bao gồm Smart Data Explorer)
-tab_smart, tab_arch, tab_quality, tab_market, tab_perf = st.tabs([
-    "🔍 Smart Data Explorer (Trợ Lý Truy Vấn)",
+# Phân hệ chính: 4 Tabs Chuẩn Học Thuật
+tab_arch, tab_quality, tab_market, tab_perf = st.tabs([
     "1. Kiến Trúc và Tích Hợp Dữ Liệu",
     "2. Chất Lượng và Biến Đổi Dữ Liệu",
     "3. Phân Tích Thị Trường Bất Động Sản",
     "4. Hiệu Năng Xử Lý, Lưu Trữ & Ứng Dụng"
 ])
-
-
-# ==============================================================================
-# TAB 0: SMART DATA EXPLORER (TRỢ LÝ TRUY VẤN VÀ PHÂN TÍCH THÔNG MINH)
-# ==============================================================================
-with tab_smart:
-    st.subheader("House Prediction — Smart Data Explorer")
-    st.markdown("**Trợ lý truy vấn và phân tích dữ liệu bất động sản (Smart Query & Smart Answer)**")
-    st.caption(
-        "Khai thác kho dữ liệu bất động sản lớn bằng câu hỏi tiếng Việt tự nhiên hoặc bộ lọc động mà không cần biết SQL hay cấu trúc schema. "
-        "Hệ thống tự động nhận diện ý định (Intent), lập kế hoạch truy vấn, tính toán trên dữ liệu thật (Gold Layer), tự chọn biểu đồ phù hợp và giải trình phương pháp tính."
-    )
-
-    # Initialize Session State
-    if "current_smart_query" not in st.session_state:
-        st.session_state["current_smart_query"] = "So sánh giá nhà trung vị ở Hà Nội và TP. Hồ Chí Minh"
-    if "query_context" not in st.session_state:
-        st.session_state["query_context"] = {}
-
-    # 1. Natural Language Input & Quick Suggestion Chips
-    st.markdown("##### 💡 Gợi Ý Câu Hỏi Nhanh (Click để nạp câu hỏi)")
-    q_col1, q_col2, q_col3, q_col4 = st.columns(4)
-    with q_col1:
-        if st.button("📊 Tỉnh nào giá trung vị cao nhất?", key="btn_q1", use_container_width=True):
-            st.session_state["current_smart_query"] = "Tỉnh nào có giá trung vị cao nhất?"
-            st.rerun()
-    with q_col2:
-        if st.button("📐 Giá thay đổi theo diện tích thế nào?", key="btn_q2", use_container_width=True):
-            st.session_state["current_smart_query"] = "Giá nhà thay đổi theo diện tích thế nào?"
-            st.rerun()
-    with q_col3:
-        if st.button("🏙️ So sánh số lượng tin theo tỉnh", key="btn_q3", use_container_width=True):
-            st.session_state["current_smart_query"] = "So sánh số lượng tin theo tỉnh"
-            st.rerun()
-    with q_col4:
-        if st.button("🛡️ Kiểm tra chất lượng dữ liệu Gold", key="btn_q4", use_container_width=True):
-            st.session_state["current_smart_query"] = "Kiểm tra chất lượng dữ liệu Gold"
-            st.rerun()
-
-    # User Input
-    user_query = st.text_input(
-        "Bạn muốn phân tích điều gì?",
-        value=st.session_state["current_smart_query"],
-        placeholder="Ví dụ: So sánh giá nhà trung vị ở Hà Nội và TP. Hồ Chí Minh, hoặc: nhà dưới 5 tỷ diện tích trên 80 m2 ở Hà Nội..."
-    )
-
-    # Advanced Options (Tùy chọn phân tích đề xuất)
-    with st.expander("⚙️ Tùy Chọn Phân Tích & Bộ Lọc Nâng Cao", expanded=False):
-        opt_c1, opt_c2, opt_c3, opt_c4 = st.columns(4)
-        with opt_c1:
-            query_mode = st.selectbox(
-                "Chế độ truy vấn",
-                ["Tự động nhận diện câu hỏi", "Phân tích thị trường", "Kiểm tra chất lượng dữ liệu", "Hiệu năng pipeline và lưu trữ"]
-            )
-        with opt_c2:
-            data_tier = st.selectbox(
-                "Tầng dữ liệu",
-                ["Gold — dữ liệu phân tích (300,295 dòng)", "Silver — dữ liệu đã làm sạch", "Bronze — dữ liệu thô"]
-            )
-        with opt_c3:
-            scope_filter = st.selectbox(
-                "Phạm vi dữ liệu",
-                ["Toàn bộ dữ liệu", "Hà Nội", "Hồ Chí Minh", "Đà Nẵng", "Bình Dương", "Khánh Hòa", "Hải Phòng"]
-            )
-        with opt_c4:
-            chart_pref = st.selectbox(
-                "Kiểu hiển thị kết quả",
-                ["Tự chọn biểu đồ phù hợp", "Bảng số liệu", "Biểu đồ cột", "Biểu đồ đường"]
-            )
-
-    submit_query = st.button("🔍 Phân Tích Câu Hỏi", type="primary", use_container_width=True)
-
-    # Execute and render smart answer
-    if user_query:
-        smart_engine = SmartQueryEngine(df_gold, summary_report)
-        effective_query = user_query
-        if scope_filter != "Toàn bộ dữ liệu" and scope_filter not in effective_query:
-            effective_query = f"{effective_query} ở {scope_filter}"
-
-        res = smart_engine.execute_smart_query(
-            effective_query,
-            context=st.session_state.get("query_context", {}),
-            chart_type_pref=chart_pref
-        )
-
-        st.session_state["query_context"] = {
-            "last_intent": res["intent"]["intent_type"],
-            "last_provinces": res["intent"]["provinces"]
-        }
-
-        st.markdown("---")
-        st.markdown(f"#### 🎯 Kết Quả Phân Tích Thông Minh")
-        st.caption(f"⚡ Đã thực thi truy vấn an toàn trong **{res['exec_time_ms']} ms** trên {res['lineage']}")
-
-        # 5 PHẦN KẾT QUẢ ĐẦU RA THÔNG MINH:
-        # A. KẾT LUẬN TRỰC TIẾP
-        st.markdown("##### A. Kết Luận Trực Tiếp")
-        st.markdown(
-            f'<div style="background-color: #f0fdf4; border-left: 5px solid #16a34a; padding: 1rem; border-radius: 6px; font-size: 1.05rem; color: #14532d; margin-bottom: 1rem;">'
-            f'{res["conclusion"]}'
-            f'</div>',
-            unsafe_allow_html=True
-        )
-
-        # B. BẢNG SỐ LIỆU VÀ BIỂU ĐỒ
-        st.markdown("##### B. Dữ Liệu & Biểu Đồ Trực Quan")
-        c_data = res["chart_data"]
-        c_type = res["chart_type"]
-
-        if c_data is not None and not c_data.empty:
-            chart_col, data_col = st.columns([1.3, 1.0])
-            with chart_col:
-                first_col = c_data.columns[0]
-                num_cols = [c for c in c_data.columns if c != first_col and np.issubdtype(c_data[c].dtype, np.number)]
-                if c_type in ["bar", "horizontal_bar", "grouped_bar"] and num_cols:
-                    st.bar_chart(c_data.set_index(first_col)[num_cols[0]])
-                elif c_type == "line" and num_cols:
-                    st.line_chart(c_data.set_index(first_col)[num_cols[0]])
-                else:
-                    st.dataframe(c_data, use_container_width=True)
-
-            with data_col:
-                st.dataframe(c_data, use_container_width=True, hide_index=True)
-        else:
-            st.info("Không có dữ liệu dạng bảng cho truy vấn này.")
-
-        # C & D: PHƯƠNG PHÁP TÍNH & NGUỒN DỮ LIỆU
-        meta_col1, meta_col2 = st.columns(2)
-        with meta_col1:
-            st.markdown("##### C. Phương Pháp Tính Toán")
-            st.markdown(
-                f'<div style="background-color: #f8fafc; border-left: 4px solid #3b82f6; padding: 0.8rem; border-radius: 4px; font-size: 0.9rem; color: #1e293b;">'
-                f'• <b>Thước đo:</b> {res["methodology"]}<br>'
-                f'• <b>Loại bỏ thiên lệch:</b> Ưu tiên Trung vị (Median P50) thay vì Trung bình (Mean) do phân phối giá bất động sản lệch phải cực đoan.'
-                f'</div>',
-                unsafe_allow_html=True
-            )
-        with meta_col2:
-            st.markdown("##### D. Nguồn Dữ Liệu & Độ Tin Cậy")
-            st.markdown(
-                f'<div style="background-color: #f8fafc; border-left: 4px solid #059669; padding: 0.8rem; border-radius: 4px; font-size: 0.9rem; color: #1e293b;">'
-                f'• <b>Nguồn gốc:</b> {res["lineage"]}<br>'
-                f'• <b>Cam kết toàn vẹn:</b> 100% số liệu tính trực tiếp từ kho Parquet, không suy đoán (Zero Hallucination).<br>'
-                f'• <b>Thời gian phản hồi:</b> {res["exec_time_ms"]} ms.'
-                f'</div>',
-                unsafe_allow_html=True
-            )
-
-        # E. GỢI Ý CÂU HỎI TIẾP THEO (FOLLOW-UP QUESTIONS)
-        if res.get("follow_ups"):
-            st.markdown("##### E. Gợi Ý Phân Tích Đào Sâu (Click để hỏi tiếp)")
-            f_cols = st.columns(len(res["follow_ups"]))
-            for idx, fu in enumerate(res["follow_ups"]):
-                with f_cols[idx]:
-                    if st.button(f"👉 {fu}", key=f"fu_btn_{idx}", use_container_width=True):
-                        st.session_state["current_smart_query"] = fu
-                        st.rerun()
 
 
 # ==============================================================================
