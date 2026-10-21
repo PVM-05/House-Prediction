@@ -1,0 +1,19 @@
+﻿Nhóm Chỉ Số,Tên Chỉ Số,Giá Trị,Đơn Vị / Ghi Chú
+Quy mô dữ liệu,Số lượng phân mảnh (Shards) đã nạp,1 / 10 shards,Shard 0 (tinixai/vietnam-real-estates)
+Quy mô dữ liệu,Số bản ghi Tầng Đồng (Bronze),"350,075","22 cột, 153.89 MB"
+Quy mô dữ liệu,Số bản ghi Tầng Bạc (Silver),"307,457","23 cột, 130.04 MB"
+Quy mô dữ liệu,Số bản ghi Tầng Vàng (Gold),"300,295","33 cột, 128.20 MB"
+Chất lượng dữ liệu,Số bản ghi trùng lặp bị khử,"29,686",8.48% trên tập Bronze
+Chất lượng dữ liệu,Số bản ghi giá null hoặc <= 0,"12,932",3.69% trên tập Bronze
+Chất lượng dữ liệu,Số bản ghi ngoại lệ nghiệp vụ bị loại,"7,162",2.33% trên tập Silver
+Hiệu quả ETL,Tỷ lệ giữ lại dữ liệu Tầng Bạc,87.83%,Silver / Bronze
+Hiệu quả ETL,Tỷ lệ giữ lại dữ liệu Tầng Vàng,97.67%,Gold / Silver
+Hiệu quả ETL,Tỷ lệ giữ lại toàn quy trình (End-to-End),85.78%,Gold / Bronze
+Thống kê mô tả,Giá trung vị toàn thị trường (Gold),7.30,"Tỷ VNĐ (Min: 0.11, Max: 500.0)"
+Thống kê mô tả,Diện tích trung vị (Gold),80.0,"m² (Min: 10, Max: 5000)"
+Thống kê mô tả,Đơn giá trung vị trên mỗi m² (Gold),94.2,Triệu VNĐ/m²
+Hiệu năng xử lý,Thời gian làm sạch PySpark (Silver),50.33 s,"6,956 bản ghi/giây"
+Hiệu năng xử lý,Thời gian trích xuất đặc trưng PySpark (Gold),76.67 s,"4,010 bản ghi/giây"
+Hiệu năng xử lý,Thời gian nạp CSDL (Storage),289.43 s,"1,038 bản ghi/giây"
+Hiệu năng xử lý,Tổng thời gian toàn bộ pipeline,451.4 s (7.5 phút),Tốc độ trung bình 775 bản ghi/giây
+Lưu trữ & Nén,Hệ số nén Parquet Snappy so với CSV thô,1.4x,Tiết kiệm 29.09% dung lượng đĩa

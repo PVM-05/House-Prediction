@@ -1,24 +1,56 @@
 {
+  "split_protocol": {
+    "total_gold_records": 300295,
+    "train_samples": 210206,
+    "val_samples": 45044,
+    "test_samples": 45045,
+    "split_ratios": "70% Huấn luyện (Train) / 15% Kiểm định (Validation) / 15% Kiểm thử độc lập (Test)",
+    "random_state": 42,
+    "early_stopping_set": "Tập Kiểm định (Validation 15%)",
+    "final_evaluation_set": "Tập Kiểm thử độc lập (Holdout Test 15%)",
+    "target_transformation": "log1p(price_vnd) -> dự báo -> expm1(pred_log)"
+  },
   "models": [
     {
-      "model": "Ridge (Baseline)",
-      "rmse_log": 0.6657,
-      "r2_score": 0.6208,
-      "mae_billion_vnd": 10.6555,
-      "rmse_billion_vnd": 120.0114,
-      "mape_percent": 62.77,
-      "train_samples": 37179,
-      "test_samples": 9295
+      "model": "Hồi quy tuyến tính chuẩn hóa L2 (Ridge Baseline)",
+      "train_samples": 210206,
+      "val_samples": 45044,
+      "test_samples": 45045,
+      "val_r2_log": 0.6257,
+      "val_rmse_log": 0.6511,
+      "r2_score": 0.6266,
+      "r2_log": 0.6266,
+      "rmse_log": 0.6556,
+      "mae_log": 0.4918,
+      "mae_billion_vnd": 10.1771,
+      "medae_billion_vnd": 2.6236,
+      "rmse_billion_vnd": 90.3788,
+      "mape_percent": 62.4,
+      "mdape_percent": 37.28
     },
     {
-      "model": "LightGBM Regressor",
-      "rmse_log": 0.4552,
-      "r2_score": 0.8227,
-      "mae_billion_vnd": 5.0502,
-      "rmse_billion_vnd": 14.4058,
-      "mape_percent": 39.84,
-      "train_samples": 37179,
-      "test_samples": 9295
+      "model": "Cây quyết định tăng cường độ dốc (LightGBM Regressor)",
+      "selected_hyperparameters": {
+        "n_estimators": 500,
+        "best_iteration": 500,
+        "learning_rate": 0.05,
+        "num_leaves": 63,
+        "min_child_samples": 25
+      },
+      "train_samples": 210206,
+      "val_samples": 45044,
+      "test_samples": 45045,
+      "val_r2_log": 0.8515,
+      "val_rmse_log": 0.4101,
+      "r2_score": 0.8537,
+      "r2_log": 0.8537,
+      "rmse_log": 0.4104,
+      "mae_log": 0.2907,
+      "mae_billion_vnd": 4.644,
+      "medae_billion_vnd": 1.3597,
+      "rmse_billion_vnd": 13.7568,
+      "mape_percent": 33.16,
+      "mdape_percent": 20.47
     }
   ]
 }

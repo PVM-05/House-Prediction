@@ -15,9 +15,19 @@ import pyarrow.parquet as pq
 def get_spark_session(app_name: str = "VietnamRealEstateETL") -> SparkSession:
     """
     Initializes and returns a configured SparkSession.
+    Automatically detects JDK 17 on Windows if default JAVA_HOME is older.
     """
     os.environ["PYSPARK_PYTHON"] = sys.executable
     os.environ["PYSPARK_DRIVER_PYTHON"] = sys.executable
+
+    if sys.platform == "win32":
+        jdk17_path = Path("C:/Program Files/Java/jdk-17")
+        if jdk17_path.exists():
+            os.environ["JAVA_HOME"] = str(jdk17_path)
+            jdk17_bin = str(jdk17_path / "bin")
+            if jdk17_bin not in os.environ.get("PATH", ""):
+                os.environ["PATH"] = jdk17_bin + os.pathsep + os.environ.get("PATH", "")
+
 
     builder = (
         SparkSession.builder

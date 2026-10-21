@@ -20,7 +20,23 @@ if sys.platform == "win32":
     except Exception:
         pass
 
-from src.config import BRONZE_DIR, HF_DATASET_ID, DEFAULT_SHARDS
+import json
+from src.config import BRONZE_DIR, HF_DATASET_ID, DEFAULT_SHARDS, DATA_QUALITY_REPORT_PATH
+
+
+def _update_quality_report(section_name: str, payload: dict):
+    """Helper to update a section in models/data_quality_report.json."""
+    DATA_QUALITY_REPORT_PATH.parent.mkdir(parents=True, exist_ok=True)
+    report = {}
+    if DATA_QUALITY_REPORT_PATH.exists():
+        try:
+            with open(DATA_QUALITY_REPORT_PATH, "r", encoding="utf-8") as f:
+                report = json.load(f)
+        except Exception:
+            report = {}
+    report[section_name] = payload
+    with open(DATA_QUALITY_REPORT_PATH, "w", encoding="utf-8") as f:
+        json.dump(report, f, indent=2, ensure_ascii=False)
 
 
 def ingest_data(shards=None, sample_size=None):
@@ -40,6 +56,7 @@ def ingest_data(shards=None, sample_size=None):
 
     tables = []
     total_records = 0
+    raw_shard_records = 0
 
     for shard in shards:
         print(f"[*] Downloading {shard} from Hugging Face...")
@@ -52,9 +69,10 @@ def ingest_data(shards=None, sample_size=None):
         
         # Read parquet shard
         table = pq.read_table(local_shard_path)
+        raw_shard_records += table.num_rows
         if sample_size and sample_size < table.num_rows:
             table = table.slice(0, sample_size)
-            print(f"[!] Sliced sample to {sample_size} records for rapid development.")
+            print(f"[!] Sliced sample to {sample_size:,} records (out of {raw_shard_records:,} in shard).")
 
         # Convert to pandas or pyarrow to add metadata columns
         df = table.to_pandas()
@@ -72,9 +90,24 @@ def ingest_data(shards=None, sample_size=None):
     pq.write_table(combined_table, bronze_output, compression="snappy")
 
     output_size_mb = bronze_output.stat().st_size / (1024 * 1024)
+    _update_quality_report("ingestion", {
+        "dataset_id": HF_DATASET_ID,
+        "source_total_shards_in_repo": 10,
+        "source_total_records_in_repo": 3500744,
+        "ingested_shards": list(shards),
+        "downloaded_shard_total_records": int(raw_shard_records),
+        "is_sampled": bool(sample_size is not None and sample_size < raw_shard_records),
+        "sample_size_parameter": sample_size,
+        "bronze_records": int(total_records),
+        "bronze_file_size_mb": round(float(output_size_mb), 2),
+        "batch_id": batch_id,
+        "ingested_at": ingested_at
+    })
+
     print(f"[✓] Bronze Ingestion Complete!")
     print(f"    - Output: {bronze_output}")
-    print(f"    - Total records: {total_records:,}")
+    print(f"    - Downloaded Shard Rows: {raw_shard_records:,}")
+    print(f"    - Bronze Records Saved: {total_records:,}")
     print(f"    - File size: {output_size_mb:.2f} MB")
     print(f"    - Ingestion timestamp: {ingested_at}")
     return bronze_output, total_records
@@ -87,3 +120,4 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     ingest_data(shards=args.shards, sample_size=args.sample_size)
+

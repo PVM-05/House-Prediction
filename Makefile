@@ -28,6 +28,7 @@ train:
 	$(PYTHON) -m src.ml.train_lgbm
 
 evaluate:
+	$(PYTHON) -m src.analytics.generate_eda_charts
 	$(PYTHON) -m src.ml.evaluate
 
 app:

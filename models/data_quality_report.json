@@ -1,0 +1,135 @@
+{
+  "ingestion": {
+    "dataset_id": "tinixai/vietnam-real-estates",
+    "source_total_shards_in_repo": 10,
+    "source_total_records_in_repo": 3500744,
+    "ingested_shards": [
+      "shard_0000.parquet"
+    ],
+    "downloaded_shard_total_records": 350075,
+    "is_sampled": false,
+    "sample_size_parameter": null,
+    "bronze_records": 350075,
+    "bronze_file_size_mb": 153.89,
+    "batch_id": "batch_20261012_041130_3d4fc8",
+    "ingested_at": "2026-10-12T04:11:30.762997+00:00"
+  },
+  "silver_cleaning": {
+    "input_bronze_records": 350075,
+    "duplicates_removed": 29686,
+    "after_dedup_records": 320389,
+    "missing_or_invalid_price_count": 12932,
+    "missing_or_invalid_area_count": 0,
+    "total_invalid_price_or_area_removed": 12932,
+    "imputed_null_counts": {
+      "floor_count": 266360,
+      "bedroom_count": 158996,
+      "frontage_width": 147140,
+      "road_width": 286043
+    },
+    "output_silver_records": 307457,
+    "retention_rate_percent": 87.83,
+    "stats_before_outlier_filter": {
+      "price_billion": {
+        "min": 0.0003,
+        "p10": 1.96,
+        "p25": 3.8,
+        "median": 7.2,
+        "mean": 25.4,
+        "p75": 14.9,
+        "p90": 31.644,
+        "max": 881020.0,
+        "std": 2006.629
+      },
+      "area_m2": {
+        "min": 3.16,
+        "p10": 41.0,
+        "p25": 56.5,
+        "median": 80.0,
+        "mean": 393.99,
+        "p75": 122.0,
+        "p90": 240.0,
+        "max": 24000000.0,
+        "std": 51332.22
+      },
+      "price_per_m2_million": {
+        "median": 92.39,
+        "mean": 251.81,
+        "max": 27045454.55
+      }
+    },
+    "duration_seconds": 50.33
+  },
+  "gold_feature_engineering": {
+    "input_silver_records": 307457,
+    "outlier_breakdown": {
+      "area_outside_10_to_5000_m2": 1677,
+      "price_outside_100M_to_500B_vnd": 1104,
+      "price_per_m2_outside_2M_to_1B_vnd": 5788,
+      "structure_floors_gt_25_or_bedrooms_gt_20": 450,
+      "total_outliers_removed": 7162
+    },
+    "output_gold_records": 300295,
+    "gold_to_silver_retention_percent": 97.67,
+    "distinct_provinces": 63,
+    "distinct_districts": 527,
+    "nlp_extracted_features": {
+      "has_so_do_count": 170774,
+      "has_so_do_percent": 56.87,
+      "car_access_count": 108592,
+      "car_access_percent": 36.16,
+      "is_frontage_count": 152678,
+      "is_frontage_percent": 50.84
+    },
+    "stats_after_cleaning": {
+      "price_billion": {
+        "min": 0.11,
+        "p10": 2.1,
+        "p25": 3.9,
+        "median": 7.3,
+        "mean": 14.568,
+        "p75": 14.8,
+        "p90": 30.0,
+        "max": 500.0,
+        "std": 25.9834
+      },
+      "area_m2": {
+        "min": 10.0,
+        "p10": 40.0,
+        "p25": 56.0,
+        "median": 80.0,
+        "mean": 130.93,
+        "p75": 120.0,
+        "p90": 215.0,
+        "max": 5000.0,
+        "std": 246.52
+      },
+      "price_per_m2_million": {
+        "median": 94.17,
+        "mean": 136.13,
+        "p25": 48.98,
+        "p75": 191.67,
+        "max": 1000.0
+      }
+    },
+    "duration_seconds": 76.67
+  },
+  "storage_verification": {
+    "target_database": "PostgreSQL",
+    "table_name": "real_estate_gold",
+    "load_mode": "replace",
+    "chunk_size": 5000,
+    "input_gold_records": 300295,
+    "verified_db_records": 300295,
+    "row_count_match": true,
+    "unique_key_column": "record_id",
+    "indexes_created": [
+      "idx_re_record_id_unique (UNIQUE)",
+      "idx_re_province",
+      "idx_re_district",
+      "idx_re_property_type",
+      "idx_re_price"
+    ],
+    "duration_seconds": 289.43
+  }
+}

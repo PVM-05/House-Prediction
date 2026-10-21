@@ -68,7 +68,8 @@ def main():
         run_command([PYTHON, "-m", "src.ml.train_lgbm"], "Phase 5 (ML Model): LightGBM Regressor")
 
     if action == "evaluate" or action == "all":
-        run_command([PYTHON, "-m", "src.ml.evaluate"], "Phase 5 (ML Diagnostics): Feature Importance & Regional Errors")
+        run_command([PYTHON, "-m", "src.analytics.generate_eda_charts"], "Phase 5 (Analytics): Big Data Pipeline Metrics & Comprehensive EDA Charts")
+        run_command([PYTHON, "-m", "src.ml.evaluate"], "Phase 6 (ML Diagnostics): Feature Importance & Regional Errors")
 
     if action == "app":
         print("\n>> Launching Streamlit Web Application on http://localhost:8501 ...")

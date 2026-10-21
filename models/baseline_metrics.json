@@ -1,0 +1,20 @@
+{
+  "model": "Hồi quy tuyến tính chuẩn hóa L2 (Ridge Baseline)",
+  "selected_hyperparameters": {
+    "alpha": 1.0
+  },
+  "train_samples": 210206,
+  "val_samples": 45044,
+  "test_samples": 45045,
+  "val_r2_log": 0.6257,
+  "val_rmse_log": 0.6511,
+  "r2_score": 0.6266,
+  "r2_log": 0.6266,
+  "rmse_log": 0.6556,
+  "mae_log": 0.4918,
+  "mae_billion_vnd": 10.1771,
+  "medae_billion_vnd": 2.6236,
+  "rmse_billion_vnd": 90.3788,
+  "mape_percent": 62.4,
+  "mdape_percent": 37.28
+}

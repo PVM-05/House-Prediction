@@ -1,360 +1,278 @@
 {
-  "overall_median_mape": 21.16,
-  "overall_mean_mae_billion": 4.68,
+  "evaluation_dataset": "Tập Kiểm Thử Độc Lập (Holdout Test Set - 15%)",
+  "test_samples_count": 45045,
+  "overall_metrics": {
+    "r2_score": 0.8537,
+    "r2_log": 0.8537,
+    "rmse_log": 0.4104,
+    "mae_log": 0.2907,
+    "mae_billion_vnd": 4.644,
+    "medae_billion_vnd": 1.3597,
+    "rmse_billion_vnd": 13.7568,
+    "mape_percent": 33.16,
+    "mdape_percent": 20.47
+  },
+  "residual_summary": {
+    "mean_log_residual": -0.00187,
+    "median_log_residual": -0.00624,
+    "std_log_residual": 0.4104,
+    "within_20_percent_error_rate": 49.11,
+    "within_30_percent_error_rate": 65.49
+  },
+  "overall_median_mape": 20.47,
+  "overall_mean_mae_billion": 4.644,
   "top_features": [
     {
       "feature": "area",
-      "importance": 2422
+      "feature_vi": "Diện tích đất/sàn (m²)",
+      "importance": 7466
     },
     {
       "feature": "district_clean",
-      "importance": 2084
+      "feature_vi": "Quận / Huyện",
+      "importance": 6996
     },
     {
       "feature": "frontage_width",
-      "importance": 871
+      "feature_vi": "Chiều rộng mặt tiền (m)",
+      "importance": 3724
     },
     {
       "feature": "province_clean",
-      "importance": 610
-    },
-    {
-      "feature": "property_type_name",
-      "importance": 543
-    },
-    {
-      "feature": "bedroom_count",
-      "importance": 372
+      "feature_vi": "Tỉnh / Thành phố",
+      "importance": 2075
     },
     {
       "feature": "house_direction",
-      "importance": 337
+      "feature_vi": "Hướng nhà",
+      "importance": 1418
+    },
+    {
+      "feature": "property_type_name",
+      "feature_vi": "Loại hình bất động sản",
+      "importance": 1375
     },
     {
       "feature": "house_depth",
-      "importance": 311
+      "feature_vi": "Chiều sâu thửa đất (m)",
+      "importance": 1198
     },
     {
-      "feature": "bathroom_count",
-      "importance": 300
+      "feature": "bedroom_count",
+      "feature_vi": "Số phòng ngủ",
+      "importance": 1154
     },
     {
       "feature": "is_frontage",
-      "importance": 262
+      "feature_vi": "Nhà mặt tiền kinh doanh",
+      "importance": 881
     },
     {
       "feature": "road_width",
-      "importance": 243
+      "feature_vi": "Độ rộng đường trước nhà (m)",
+      "importance": 874
     },
     {
-      "feature": "car_access",
-      "importance": 214
+      "feature": "bathroom_count",
+      "feature_vi": "Số phòng vệ sinh",
+      "importance": 857
     },
     {
       "feature": "floor_count",
-      "importance": 210
+      "feature_vi": "Số tầng",
+      "importance": 845
+    },
+    {
+      "feature": "car_access",
+      "feature_vi": "Ngõ ô tô vào được",
+      "importance": 727
     },
     {
       "feature": "has_so_do",
-      "importance": 160
+      "feature_vi": "Có Sổ đỏ / Sổ hồng",
+      "importance": 641
     },
     {
       "feature": "balcony_direction",
-      "importance": 61
-    },
-    {
-      "feature": "published_year",
-      "importance": 0
-    },
-    {
-      "feature": "published_quarter",
-      "importance": 0
+      "feature_vi": "Hướng ban công",
+      "importance": 352
     },
     {
       "feature": "published_month",
+      "feature_vi": "Tháng đăng tin",
+      "importance": 346
+    },
+    {
+      "feature": "published_quarter",
+      "feature_vi": "Quý đăng tin",
+      "importance": 71
+    },
+    {
+      "feature": "published_year",
+      "feature_vi": "Năm đăng tin",
       "importance": 0
     }
   ],
   "top_provinces_error": [
     {
-      "province_name": "Hà Nội",
-      "listing_count": 16266,
-      "median_actual_billion": 9.0,
-      "median_pred_billion": 9.262136692026338,
-      "mae_billion": 4.3143132068587775,
-      "mape_percent": 18.202504755037502
+      "province_name": "Hồ Chí Minh",
+      "listing_count": 15871,
+      "median_actual_billion": 8.5,
+      "median_pred_billion": 8.21,
+      "mae_billion": 6.4,
+      "medae_billion": 1.86,
+      "mape_percent": 36.25,
+      "mdape_percent": 22.17
     },
     {
-      "province_name": "Hồ Chí Minh",
-      "listing_count": 16171,
-      "median_actual_billion": 8.5,
-      "median_pred_billion": 8.400061686624005,
-      "mae_billion": 6.633836388026857,
-      "mape_percent": 23.032408897966828
+      "province_name": "Hà Nội",
+      "listing_count": 15687,
+      "median_actual_billion": 8.9,
+      "median_pred_billion": 9.14,
+      "mae_billion": 4.22,
+      "medae_billion": 1.53,
+      "mape_percent": 26.48,
+      "mdape_percent": 17.57
     },
     {
       "province_name": "Đà Nẵng",
-      "listing_count": 2552,
-      "median_actual_billion": 7.48,
-      "median_pred_billion": 7.46700801145151,
-      "mae_billion": 5.105747357424034,
-      "mape_percent": 23.43377237211557
+      "listing_count": 2580,
+      "median_actual_billion": 7.57,
+      "median_pred_billion": 7.74,
+      "mae_billion": 5.65,
+      "medae_billion": 1.69,
+      "mape_percent": 33.55,
+      "mdape_percent": 22.66
     },
     {
       "province_name": "Bình Dương",
-      "listing_count": 2060,
-      "median_actual_billion": 2.9,
-      "median_pred_billion": 2.866340228511554,
-      "mae_billion": 1.2880121941201208,
-      "mape_percent": 17.897963723265388
+      "listing_count": 1977,
+      "median_actual_billion": 2.91,
+      "median_pred_billion": 3.01,
+      "mae_billion": 1.41,
+      "medae_billion": 0.54,
+      "mape_percent": 29.74,
+      "mdape_percent": 18.63
     },
     {
       "province_name": "Khánh Hòa",
-      "listing_count": 1502,
-      "median_actual_billion": 5.125,
-      "median_pred_billion": 5.202158398739968,
-      "mae_billion": 3.9431134610921963,
-      "mape_percent": 25.857623833226253
+      "listing_count": 1378,
+      "median_actual_billion": 4.5,
+      "median_pred_billion": 4.68,
+      "mae_billion": 4.1,
+      "medae_billion": 1.23,
+      "mape_percent": 44.64,
+      "mdape_percent": 26.33
     },
     {
       "province_name": "Hải Phòng",
-      "listing_count": 1061,
-      "median_actual_billion": 3.73,
-      "median_pred_billion": 3.62440725428103,
-      "mae_billion": 2.5571854874812545,
-      "mape_percent": 23.391059008519203
+      "listing_count": 901,
+      "median_actual_billion": 3.7,
+      "median_pred_billion": 3.59,
+      "mae_billion": 2.9,
+      "medae_billion": 0.8,
+      "mape_percent": 35.42,
+      "mdape_percent": 23.68
     },
     {
       "province_name": "Long An",
-      "listing_count": 893,
+      "listing_count": 829,
       "median_actual_billion": 2.5,
-      "median_pred_billion": 2.1631484825776894,
-      "mae_billion": 1.031139339847825,
-      "mape_percent": 22.149609023262222
+      "median_pred_billion": 2.3,
+      "mae_billion": 1.2,
+      "medae_billion": 0.48,
+      "mape_percent": 33.67,
+      "mdape_percent": 21.68
     },
     {
       "province_name": "Hưng Yên",
-      "listing_count": 871,
-      "median_actual_billion": 8.7,
-      "median_pred_billion": 8.9295142621801,
-      "mae_billion": 2.0392416760000636,
-      "mape_percent": 11.828479647990072
+      "listing_count": 797,
+      "median_actual_billion": 8.0,
+      "median_pred_billion": 7.89,
+      "mae_billion": 1.84,
+      "medae_billion": 0.7,
+      "mape_percent": 16.89,
+      "mdape_percent": 10.52
     },
     {
       "province_name": "Đồng Nai",
-      "listing_count": 795,
-      "median_actual_billion": 2.75,
-      "median_pred_billion": 2.431752749243511,
-      "mae_billion": 1.897435659492312,
-      "mape_percent": 24.822959010548118
+      "listing_count": 757,
+      "median_actual_billion": 2.8,
+      "median_pred_billion": 2.47,
+      "mae_billion": 2.11,
+      "medae_billion": 0.71,
+      "mape_percent": 41.59,
+      "mdape_percent": 24.96
     },
     {
       "province_name": "Bà Rịa - Vũng Tàu",
-      "listing_count": 639,
-      "median_actual_billion": 4.5,
-      "median_pred_billion": 4.085328071312392,
-      "mae_billion": 3.2191512967223037,
-      "mape_percent": 28.74975548775772
+      "listing_count": 661,
+      "median_actual_billion": 4.0,
+      "median_pred_billion": 3.77,
+      "mae_billion": 4.0,
+      "medae_billion": 1.12,
+      "mape_percent": 42.65,
+      "mdape_percent": 28.17
     },
     {
       "province_name": "Lâm Đồng",
-      "listing_count": 391,
+      "listing_count": 387,
       "median_actual_billion": 4.2,
-      "median_pred_billion": 4.429275652493529,
-      "mae_billion": 3.6135058777348914,
-      "mape_percent": 29.383638280652296
-    },
-    {
-      "province_name": "Quảng Nam",
-      "listing_count": 247,
-      "median_actual_billion": 4.2,
-      "median_pred_billion": 3.626535439979518,
-      "mae_billion": 3.6748260401235213,
-      "mape_percent": 26.838608222238925
+      "median_pred_billion": 5.01,
+      "mae_billion": 4.6,
+      "medae_billion": 1.26,
+      "mape_percent": 59.31,
+      "mdape_percent": 31.52
     },
     {
       "province_name": "Bắc Ninh",
-      "listing_count": 232,
-      "median_actual_billion": 4.7,
-      "median_pred_billion": 4.301545733465729,
-      "mae_billion": 1.7461605229258725,
-      "mape_percent": 21.98560178220479
+      "listing_count": 248,
+      "median_actual_billion": 4.56,
+      "median_pred_billion": 4.45,
+      "mae_billion": 1.55,
+      "medae_billion": 0.86,
+      "mape_percent": 28.7,
+      "mdape_percent": 16.9
     },
     {
       "province_name": "Quảng Ninh",
-      "listing_count": 226,
-      "median_actual_billion": 3.25,
-      "median_pred_billion": 2.767365807126657,
-      "mae_billion": 4.566493920722699,
-      "mape_percent": 29.77128162774713
+      "listing_count": 244,
+      "median_actual_billion": 3.78,
+      "median_pred_billion": 3.35,
+      "mae_billion": 3.75,
+      "medae_billion": 0.97,
+      "mape_percent": 50.51,
+      "mdape_percent": 29.38
     },
     {
-      "province_name": "Thanh Hóa",
-      "listing_count": 166,
-      "median_actual_billion": 1.5950000000000002,
-      "median_pred_billion": 1.5281258451939017,
-      "mae_billion": 1.865142723260233,
-      "mape_percent": 29.750510694556873
-    },
-    {
-      "province_name": "Cần Thơ",
-      "listing_count": 164,
-      "median_actual_billion": 3.6500000000000004,
-      "median_pred_billion": 3.817875300483443,
-      "mae_billion": 3.090177815779503,
-      "mape_percent": 24.407522530045167
-    },
-    {
-      "province_name": "Vĩnh Phúc",
-      "listing_count": 149,
-      "median_actual_billion": 3.35,
-      "median_pred_billion": 3.149430758218233,
-      "mae_billion": 2.9972011098915914,
-      "mape_percent": 28.09452013295557
-    },
-    {
-      "province_name": "Hà Nam",
-      "listing_count": 143,
-      "median_actual_billion": 3.0,
-      "median_pred_billion": 3.2778804807089763,
-      "mae_billion": 2.747930519756909,
-      "mape_percent": 19.378417339894256
-    },
-    {
-      "province_name": "Bình Định",
-      "listing_count": 142,
-      "median_actual_billion": 2.0,
-      "median_pred_billion": 1.9490121039929016,
-      "mae_billion": 0.847432433795534,
-      "mape_percent": 19.769375265790146
+      "province_name": "Quảng Nam",
+      "listing_count": 237,
+      "median_actual_billion": 3.6,
+      "median_pred_billion": 3.13,
+      "mae_billion": 2.67,
+      "medae_billion": 0.78,
+      "mape_percent": 41.37,
+      "mdape_percent": 23.37
     },
     {
       "province_name": "Huế",
-      "listing_count": 135,
-      "median_actual_billion": 2.54,
-      "median_pred_billion": 2.2268816919154144,
-      "mae_billion": 4.4622967478368505,
-      "mape_percent": 28.55873020448607
+      "listing_count": 176,
+      "median_actual_billion": 3.48,
+      "median_pred_billion": 3.05,
+      "mae_billion": 1.99,
+      "medae_billion": 0.75,
+      "mape_percent": 39.82,
+      "mdape_percent": 23.29
     },
     {
-      "province_name": "Đắk Lắk",
-      "listing_count": 128,
-      "median_actual_billion": 2.64,
-      "median_pred_billion": 2.431132123965,
-      "mae_billion": 2.1435934543494,
-      "mape_percent": 31.919148664452017
-    },
-    {
-      "province_name": "Hòa Bình",
-      "listing_count": 119,
-      "median_actual_billion": 2.0,
-      "median_pred_billion": 1.6249564352981714,
-      "mae_billion": 1.9771247040618942,
-      "mape_percent": 40.5399135648538
-    },
-    {
-      "province_name": "Bình Thuận",
-      "listing_count": 101,
-      "median_actual_billion": 3.9,
-      "median_pred_billion": 3.858549549563301,
-      "mae_billion": 3.7739170978684506,
-      "mape_percent": 28.458805879732264
-    },
-    {
-      "province_name": "Thái Nguyên",
-      "listing_count": 100,
-      "median_actual_billion": 1.8250000000000002,
-      "median_pred_billion": 1.868354675429664,
-      "mae_billion": 1.2751148690354506,
-      "mape_percent": 12.712305414534631
-    },
-    {
-      "province_name": "Bình Phước",
-      "listing_count": 93,
-      "median_actual_billion": 0.85,
-      "median_pred_billion": 0.900896134095188,
-      "mae_billion": 0.8474571410959243,
-      "mape_percent": 26.56780695092043
-    },
-    {
-      "province_name": "Bắc Giang",
-      "listing_count": 89,
-      "median_actual_billion": 2.074,
-      "median_pred_billion": 2.078598772768166,
-      "mae_billion": 2.4755140338815704,
-      "mape_percent": 35.37079729810222
-    },
-    {
-      "province_name": "Kiên Giang",
-      "listing_count": 89,
-      "median_actual_billion": 3.5,
-      "median_pred_billion": 3.532699604063654,
-      "mae_billion": 4.3901719049490735,
-      "mape_percent": 31.62646329939678
-    },
-    {
-      "province_name": "Bến Tre",
-      "listing_count": 87,
-      "median_actual_billion": 0.896,
-      "median_pred_billion": 0.8390901121150078,
-      "mae_billion": 0.9562172169759612,
-      "mape_percent": 29.118641519770332
-    },
-    {
-      "province_name": "Tây Ninh",
-      "listing_count": 79,
-      "median_actual_billion": 1.2,
-      "median_pred_billion": 1.1150756569232159,
-      "mae_billion": 2.402696881639773,
-      "mape_percent": 19.539460451292143
-    },
-    {
-      "province_name": "Phú Thọ",
-      "listing_count": 79,
-      "median_actual_billion": 4.0,
-      "median_pred_billion": 3.3495870665279743,
-      "mae_billion": 3.0031456934055916,
-      "mape_percent": 29.704341339154144
-    },
-    {
-      "province_name": "Nam Định",
-      "listing_count": 76,
-      "median_actual_billion": 1.575,
-      "median_pred_billion": 1.529520309486971,
-      "mae_billion": 0.7272939539556691,
-      "mape_percent": 18.07402231336649
-    },
-    {
-      "province_name": "Tiền Giang",
-      "listing_count": 74,
-      "median_actual_billion": 1.025,
-      "median_pred_billion": 0.883800836748083,
-      "mae_billion": 0.8578617426267355,
-      "mape_percent": 29.463545007846946
-    },
-    {
-      "province_name": "Nghệ An",
-      "listing_count": 71,
-      "median_actual_billion": 2.85,
-      "median_pred_billion": 3.075622341634227,
-      "mae_billion": 1.6804147898093154,
-      "mape_percent": 27.807578750770457
-    },
-    {
-      "province_name": "Thái Bình",
-      "listing_count": 60,
-      "median_actual_billion": 1.6,
-      "median_pred_billion": 1.6359789796140751,
-      "mae_billion": 0.8068974837187244,
-      "mape_percent": 31.716632941950067
-    },
-    {
-      "province_name": "Phú Yên",
-      "listing_count": 53,
-      "median_actual_billion": 2.0,
-      "median_pred_billion": 2.0748120108504278,
-      "mae_billion": 1.220791092480937,
-      "mape_percent": 31.710414679342808
+      "province_name": "Thanh Hóa",
+      "listing_count": 141,
+      "median_actual_billion": 1.7,
+      "median_pred_billion": 1.78,
+      "mae_billion": 1.16,
+      "medae_billion": 0.45,
+      "mape_percent": 36.12,
+      "mdape_percent": 26.02
     }
   ]
 }

@@ -26,7 +26,7 @@ PG_HOST = os.getenv("PG_HOST", "localhost")
 PG_PORT = os.getenv("PG_PORT", "5432")
 PG_DB = os.getenv("PG_DB", "real_estate")
 PG_USER = os.getenv("PG_USER", "postgres")
-PG_PASSWORD = os.getenv("PG_PASSWORD", "postgres")
+PG_PASSWORD = os.getenv("PG_PASSWORD", "minh2192005")
 
 POSTGRES_URL = f"postgresql+psycopg2://{PG_USER}:{PG_PASSWORD}@{PG_HOST}:{PG_PORT}/{PG_DB}"
 SQLITE_PATH = DATA_DIR / "real_estate.db"
@@ -58,8 +58,15 @@ BINARY_FEATURE_COLS = [
 ]
 TEMPORAL_COLS = [
     "published_year",
-    "published_month"
+    "published_month",
+    "published_quarter"
 ]
 
 RANDOM_STATE = 42
-TEST_SIZE = 0.2
+TRAIN_RATIO = 0.70
+VAL_RATIO = 0.15
+TEST_RATIO = 0.15
+TEST_SIZE = 0.15  # Holdout test ratio for backward compatibility
+
+DATA_QUALITY_REPORT_PATH = MODELS_DIR / "data_quality_report.json"
+

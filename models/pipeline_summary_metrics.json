@@ -1,0 +1,406 @@
+{
+  "generated_at": "2026-10-21T11:57:21Z",
+  "scale": {
+    "source_dataset_id": "tinixai/vietnam-real-estates",
+    "source_total_shards": 10,
+    "source_total_records": 3500744,
+    "ingested_shards_count": 1,
+    "bronze_records": 350075,
+    "bronze_columns": 22,
+    "bronze_file_size_mb": 153.89,
+    "silver_records": 307457,
+    "silver_columns": 23,
+    "silver_file_size_mb": 130.04,
+    "gold_records": 300295,
+    "gold_columns": 33,
+    "gold_file_size_mb": 128.2,
+    "database_storage_mb": 17.4
+  },
+  "quality": {
+    "missing_rates_bronze": {
+      "name": {
+        "null_count": 0,
+        "null_percent": 0.0
+      },
+      "description": {
+        "null_count": 0,
+        "null_percent": 0.0
+      },
+      "property_type_name": {
+        "null_count": 0,
+        "null_percent": 0.0
+      },
+      "province_name": {
+        "null_count": 0,
+        "null_percent": 0.0
+      },
+      "district_name": {
+        "null_count": 6120,
+        "null_percent": 1.75
+      },
+      "ward_name": {
+        "null_count": 50452,
+        "null_percent": 14.41
+      },
+      "street_name": {
+        "null_count": 141575,
+        "null_percent": 40.44
+      },
+      "project_name": {
+        "null_count": 260613,
+        "null_percent": 74.44
+      },
+      "price": {
+        "null_count": 13055,
+        "null_percent": 3.73
+      },
+      "area": {
+        "null_count": 0,
+        "null_percent": 0.0
+      },
+      "floor_count": {
+        "null_count": 288824,
+        "null_percent": 82.5
+      },
+      "frontage_width": {
+        "null_count": 160355,
+        "null_percent": 45.81
+      },
+      "house_depth": {
+        "null_count": 337973,
+        "null_percent": 96.54
+      },
+      "road_width": {
+        "null_count": 309457,
+        "null_percent": 88.4
+      },
+      "bedroom_count": {
+        "null_count": 173143,
+        "null_percent": 49.46
+      },
+      "bathroom_count": {
+        "null_count": 184590,
+        "null_percent": 52.73
+      },
+      "house_direction": {
+        "null_count": 236776,
+        "null_percent": 67.64
+      },
+      "balcony_direction": {
+        "null_count": 295071,
+        "null_percent": 84.29
+      },
+      "published_at": {
+        "null_count": 0,
+        "null_percent": 0.0
+      },
+      "ingested_at": {
+        "null_count": 0,
+        "null_percent": 0.0
+      },
+      "batch_id": {
+        "null_count": 0,
+        "null_percent": 0.0
+      },
+      "source_shard": {
+        "null_count": 0,
+        "null_percent": 0.0
+      }
+    },
+    "defects_and_outliers": {
+      "duplicates_removed": 29686,
+      "invalid_price_or_area_removed": 12932,
+      "outliers_breakdown": {
+        "area_outside_10_to_5000_m2": 1677,
+        "price_outside_100M_to_500B_vnd": 1104,
+        "price_per_m2_outside_2M_to_1B_vnd": 5788,
+        "structure_floors_gt_25_or_bedrooms_gt_20": 450,
+        "total_outliers_removed": 7162
+      }
+    }
+  },
+  "etl_efficiency": {
+    "bronze_to_silver_retention_percent": 87.83,
+    "silver_to_gold_retention_percent": 97.67,
+    "overall_retention_percent": 85.78,
+    "total_rejected_records": 49780,
+    "rejection_breakdown": {
+      "duplicates_removed": 29686,
+      "invalid_price_or_area_removed": 12932,
+      "outliers_removed": 7162,
+      "sum_rejections": 49780
+    }
+  },
+  "descriptive_statistics": {
+    "silver_before_outlier_filter": {
+      "price_billion": {
+        "count": 307457,
+        "min": 0.0003,
+        "q1": 3.8,
+        "median": 7.2,
+        "mean": 25.4,
+        "q3": 14.9,
+        "max": 881020.0,
+        "std": 2006.629,
+        "iqr": 11.1,
+        "skewness": 365.7432,
+        "kurtosis": 146454.5023
+      },
+      "area_m2": {
+        "count": 307457,
+        "min": 3.156,
+        "q1": 56.5,
+        "median": 80.0,
+        "mean": 393.9893,
+        "q3": 122.0,
+        "max": 24000000.0,
+        "std": 51332.2187,
+        "iqr": 65.5,
+        "skewness": 413.7913,
+        "kurtosis": 179127.6325
+      },
+      "price_per_m2_million": {
+        "count": 307457,
+        "min": 0.0006,
+        "q1": 46.8293,
+        "median": 92.3913,
+        "mean": 251.8134,
+        "q3": 190.7609,
+        "max": 27045454.5455,
+        "std": 48836.7203,
+        "iqr": 143.9316,
+        "skewness": 552.4138,
+        "kurtosis": 305911.9515
+      }
+    },
+    "gold_after_outlier_filter": {
+      "price_billion": {
+        "count": 300295,
+        "min": 0.11,
+        "q1": 3.9,
+        "median": 7.3,
+        "mean": 14.568,
+        "q3": 14.8,
+        "max": 500.0,
+        "std": 25.9834,
+        "iqr": 10.9,
+        "skewness": 6.7013,
+        "kurtosis": 67.1709
+      },
+      "area_m2": {
+        "count": 300295,
+        "min": 10.0,
+        "q1": 56.0,
+        "median": 80.0,
+        "mean": 130.9255,
+        "q3": 120.0,
+        "max": 5000.0,
+        "std": 246.5158,
+        "iqr": 64.0,
+        "skewness": 10.0359,
+        "kurtosis": 135.3315
+      },
+      "price_per_m2_million": {
+        "count": 300295,
+        "min": 2.0,
+        "q1": 48.9796,
+        "median": 94.1667,
+        "mean": 136.1282,
+        "q3": 191.6667,
+        "max": 1000.0,
+        "std": 126.7489,
+        "iqr": 142.6871,
+        "skewness": 2.008,
+        "kurtosis": 5.9738
+      },
+      "log_price": {
+        "count": 300295,
+        "min": 18.516,
+        "q1": 22.0842,
+        "median": 22.7111,
+        "mean": 22.7628,
+        "q3": 23.4179,
+        "max": 26.9379,
+        "std": 1.0716,
+        "iqr": 1.3337,
+        "skewness": 0.2361,
+        "kurtosis": 0.432
+      },
+      "log_area": {
+        "count": 300295,
+        "min": 2.3979,
+        "q1": 4.0431,
+        "median": 4.3944,
+        "mean": 4.5007,
+        "q3": 4.7958,
+        "max": 8.5174,
+        "std": 0.7087,
+        "iqr": 0.7527,
+        "skewness": 1.3549,
+        "kurtosis": 3.5334
+      }
+    }
+  },
+  "market_distribution": {
+    "top_provinces": [
+      {
+        "province_name": "Hà Nội",
+        "listing_count": 105036,
+        "market_share_percent": 34.98,
+        "median_price_billion": 9.0,
+        "median_price_m2_million": 184.6,
+        "median_area_m2": 62.0
+      },
+      {
+        "province_name": "Hồ Chí Minh",
+        "listing_count": 105028,
+        "market_share_percent": 34.97,
+        "median_price_billion": 8.4,
+        "median_price_m2_million": 109.7,
+        "median_area_m2": 80.0
+      },
+      {
+        "province_name": "Đà Nẵng",
+        "listing_count": 16939,
+        "market_share_percent": 5.64,
+        "median_price_billion": 7.5,
+        "median_price_m2_million": 72.7,
+        "median_area_m2": 100.0
+      },
+      {
+        "province_name": "Bình Dương",
+        "listing_count": 13188,
+        "market_share_percent": 4.39,
+        "median_price_billion": 2.9,
+        "median_price_m2_million": 35.0,
+        "median_area_m2": 85.6
+      },
+      {
+        "province_name": "Khánh Hòa",
+        "listing_count": 9686,
+        "market_share_percent": 3.23,
+        "median_price_billion": 4.7,
+        "median_price_m2_million": 51.3,
+        "median_area_m2": 100.0
+      },
+      {
+        "province_name": "Hải Phòng",
+        "listing_count": 6478,
+        "market_share_percent": 2.16,
+        "median_price_billion": 3.68,
+        "median_price_m2_million": 50.0,
+        "median_area_m2": 74.0
+      },
+      {
+        "province_name": "Long An",
+        "listing_count": 5366,
+        "market_share_percent": 1.79,
+        "median_price_billion": 2.45,
+        "median_price_m2_million": 22.2,
+        "median_area_m2": 100.0
+      },
+      {
+        "province_name": "Hưng Yên",
+        "listing_count": 5311,
+        "market_share_percent": 1.77,
+        "median_price_billion": 8.3,
+        "median_price_m2_million": 114.7,
+        "median_area_m2": 75.0
+      },
+      {
+        "province_name": "Đồng Nai",
+        "listing_count": 4986,
+        "market_share_percent": 1.66,
+        "median_price_billion": 2.55,
+        "median_price_m2_million": 20.9,
+        "median_area_m2": 115.0
+      },
+      {
+        "province_name": "Bà Rịa - Vũng Tàu",
+        "listing_count": 4274,
+        "market_share_percent": 1.42,
+        "median_price_billion": 3.8,
+        "median_price_m2_million": 27.8,
+        "median_area_m2": 143.0
+      }
+    ],
+    "property_types": [
+      {
+        "property_type": "Nhà",
+        "listing_count": 146516,
+        "market_share_percent": 48.79,
+        "median_price_billion": 9.47,
+        "median_price_m2_million": 166.7,
+        "median_area_m2": 65.0
+      },
+      {
+        "property_type": "Đất",
+        "listing_count": 71929,
+        "market_share_percent": 23.95,
+        "median_price_billion": 4.05,
+        "median_price_m2_million": 35.0,
+        "median_area_m2": 108.0
+      },
+      {
+        "property_type": "Căn hộ chung cư",
+        "listing_count": 55590,
+        "market_share_percent": 18.51,
+        "median_price_billion": 4.5,
+        "median_price_m2_million": 62.2,
+        "median_area_m2": 74.0
+      },
+      {
+        "property_type": "Biệt thự/Nhà liền kề",
+        "listing_count": 21231,
+        "market_share_percent": 7.07,
+        "median_price_billion": 18.5,
+        "median_price_m2_million": 153.3,
+        "median_area_m2": 120.0
+      },
+      {
+        "property_type": "Shophouse",
+        "listing_count": 5029,
+        "market_share_percent": 1.67,
+        "median_price_billion": 8.2,
+        "median_price_m2_million": 86.1,
+        "median_area_m2": 100.0
+      }
+    ],
+    "temporal_distribution": {
+      "Tháng 6/2025": {
+        "listing_count": 222471,
+        "percentage": 74.08
+      },
+      "Tháng 7/2025": {
+        "listing_count": 77824,
+        "percentage": 25.92
+      }
+    }
+  },
+  "performance": {
+    "step_durations_seconds": {
+      "phase_2_raw_ingestion": 35.0,
+      "phase_3_silver_clean": 50.33,
+      "phase_4_gold_features": 76.67,
+      "phase_5_database_load": 289.43,
+      "total_pipeline_seconds": 451.43,
+      "total_pipeline_minutes": 7.52
+    },
+    "throughput_records_per_second": {
+      "ingestion_speed": 10002.1,
+      "silver_cleaning_speed": 6955.6,
+      "gold_feature_speed": 4010.1,
+      "database_loading_speed": 1037.5,
+      "overall_end_to_end_speed": 775.5
+    }
+  },
+  "storage": {
+    "estimated_uncompressed_csv_mb": 217.01,
+    "bronze_snappy_parquet_mb": 153.89,
+    "silver_snappy_parquet_mb": 130.04,
+    "gold_snappy_parquet_mb": 128.2,
+    "sqlite_serving_db_mb": 17.4,
+    "compression_ratio_bronze_vs_csv": 1.41,
+    "compression_space_saving_percent": 29.09
+  }
+}

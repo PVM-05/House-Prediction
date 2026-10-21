@@ -7,143 +7,167 @@ backgroundColor: #f8fafc
 color: #1e293b
 ---
 
-# HỆ THỐNG TÍCH HỢP VÀ PHÂN TÍCH DỮ LIỆU LỚN
-## DỰ ĐOÁN GIÁ BẤT ĐỘNG SẢN VIỆT NAM (3.5 TRIỆU BẢN GHI)
-**Kiến Trúc Big Data 6 Tầng (Minimal Stack) - Sprint 2 Tuần**
-*Đồ Án Môn Học Tích Hợp Và Xử Lý Dữ Liệu Lớn*
+# HỆ THỐNG TÍCH HỢP & PHÂN TÍCH DỮ LIỆU LỚN
+## BẤT ĐỘNG SẢN VIỆT NAM (KIẾN TRÚC MEDALLION LAKEHOUSE)
+**Đồ Án Môn Học Tích Hợp Và Phân Tích Dữ Liệu Lớn**
+*Pipeline End-to-End Tự Động Hóa 6 Tầng Bằng Apache PySpark & Streamlit*
 
 ---
 
-## 1. Bối Cảnh và Thách Thức Nghiệp Vụ
+## 1. Bối Cảnh, Mục Tiêu & Tiêu Chí Nghiệm Thu
 
-- **Thị trường BĐS Việt Nam:** Biến động mạnh, thiếu minh bạch, tin đăng phân tán.
-- **Nguồn dữ liệu từ Hugging Face:** `tinixai/vietnam-real-estates`
-  - **3,500,744 bản ghi** (10 phân đoạn Parquet ~ 1.5 GB nén).
-  - Thu thập từ 06/2025 đến 03/2026 trên toàn quốc.
-- **Thách thức của dữ liệu thực tế:**
-  - Định dạng giá không nhất quán, lẫn tin ảo (ngoại lai cực đoan).
-  - Văn bản tự do chứa thông tin pháp lý quan trọng (sổ đỏ/hồng, ngõ ô tô).
-  - Phân phối giá lệch phải cực mạnh (Extreme Right-skewed).
-
----
-
-## 2. Ánh Xạ 6 Đặc Trưng Của Big Data (The 6 V's)
-
-1. **Volume (Quy mô):** 3.5 triệu dòng, xử lý out-of-core bằng **PySpark**.
-2. **Variety (Đa dạng):** Dữ liệu bảng (tabular) kết hợp văn bản tự do (unstructured).
-3. **Veracity (Độ tin cậy):** Lọc outlier miền giá trị, điền khuyết thiếu trung vị.
-4. **Velocity (Vận tốc/Thời gian):** Theo dõi chu kỳ đăng tin, gắn `ingested_at`, `batch_id`.
-5. **Value (Giá trị):** AI định giá tự động ($R^2 = 0.82$) và Dashboard phân tích.
-6. **Valence (Tính kết nối):** Phân cấp Tỉnh -> Huyện -> Xã -> Tuyến đường.
+- **Bối cảnh nghiệp vụ:** Thị trường BĐS Việt Nam phân tán, thiếu chuẩn hóa, tin đăng chứa nhiều dữ liệu rác, trùng lặp và văn bản tự do phức tạp.
+- **Nguồn dữ liệu:** `tinixai/vietnam-real-estates` trên Hugging Face Hub:
+  - Toàn bộ repo: **3,500,744 bản ghi** (10 phân mảnh Parquet ~ 1.5 GB).
+  - Phân mảnh nạp thực tế: `shard_0000.parquet` (**350,075 bản ghi thô**).
+- **Tiêu chí nghiệm thu hệ thống (System Acceptance Criteria):**
+  1. *Ingestion:* Thu nạp shard tự động, gắn siêu dữ liệu kiểm toán (`batch_id`, `ingested_at`).
+  2. *ETL:* Xử lý phân tán PySpark, khử trùng lặp, lọc ngoại lệ, chuyển đổi schema.
+  3. *Lưu trữ:* Nạp Lakehouse Serving DB có cam kết ACID và đánh chỉ mục B-Tree.
+  4. *Dashboard:* Giao diện Streamlit 4 Tab trực quan hóa 100% số liệu thực nghiệm.
+  5. *Kiểm thử:* Vượt qua 10/10 bài kiểm thử tự động (`pytest -v`).
 
 ---
 
-## 3. Kiến Trúc Hệ Thống 6 Tầng (Minimal Stack)
+## 2. Ánh Xạ 6 Đặc Trưng Dữ Liệu Lớn (The 6 V's of Big Data)
+
+1. **Volume (Quy mô):** 350,075 dòng thô (mở rộng tối đa 3.5M dòng), xử lý song song out-of-core bằng **Apache PySpark**.
+2. **Variety (Đa dạng):** Kết hợp dữ liệu thuộc tính có cấu trúc (diện tích, giá) với văn bản tự do (tiêu đề, mô tả pháp lý, ngõ ngách).
+3. **Veracity (Chất lượng & Độ tin cậy):** Khử 29,686 tin trùng lặp, loại 12,932 giá null/<=0, lọc 7,162 ngoại lệ cực trị.
+4. **Velocity (Thời gian & Dòng đời):** Dữ liệu thu nạp tháng 6-7/2025, gắn audit trail ISO 8601 bảo đảm khả năng tái chạy (Idempotency).
+5. **Value (Giá trị mang lại):** Cung cấp công cụ AI định giá tự động và Dashboard phân tích thị trường phục vụ người dùng.
+6. **Valence (Tính kết nối):** Cấu trúc phân cấp địa lý (Tỉnh/Thành $\rightarrow$ Quận/Huyện $\rightarrow$ Phường) và tương quan giữa đường vào với đơn giá.
+
+---
+
+## 3. Kiến Trúc Hồ Dữ Liệu 6 Tầng Medallion (Data Flow)
 
 ```
-+--------------------------------------------------------+
-| 1. Raw Source      : Hugging Face Hub (3.5M records)   |
-+--------------------------------------------------------+
-| 2. Ingestion       : Python Script -> Bronze Parquet   |
-+--------------------------------------------------------+
-| 3. PySpark ETL     : Clean (Silver) & Features (Gold)  |
-+--------------------------------------------------------+
-| 4. Storage         : PostgreSQL (Fallback SQLite)      |
-+--------------------------------------------------------+
-| 5. Machine Learning: Ridge Baseline & LightGBM         |
-+--------------------------------------------------------+
-| 6. Serving Layer   : Streamlit (Dashboard & Form AI)   |
-+--------------------------------------------------------+
+┌──────────────────────────────────────────────────────────────┐
+│ 1. Raw Source      : Hugging Face Hub (tinixai, 10 shards)   │
+├──────────────────────────────────────────────────────────────┤
+│ 2. Bronze Zone     : Parquet Snappy (350,075 dòng, 153.9 MB) │
+├──────────────────────────────────────────────────────────────┤
+│ 3. PySpark Clean   : Silver Parquet (307,457 dòng, 130.0 MB) │
+├──────────────────────────────────────────────────────────────┤
+│ 4. PySpark Features: Gold Parquet   (300,295 dòng, 128.2 MB) │
+├──────────────────────────────────────────────────────────────┤
+│ 5. Serving Storage : PostgreSQL / SQLite (300,295 dòng khớp) │
+├──────────────────────────────────────────────────────────────┤
+│ 6. Serving Layer   : Streamlit 4-Tab Dashboard & ML Model    │
+└──────────────────────────────────────────────────────────────┘
 ```
-*Vận hành tự động bằng 1 lệnh duy nhất: python run_pipeline.py all*
+*Vận hành tự động bằng 1 lệnh duy nhất: `python run_pipeline.py all`*  
+*Minh họa trực quan:* `docs/images/00_architecture_flowchart.png`
 
 ---
 
-## 4. Tầng Ingestion và Lưu Trữ Medallion
+## 4. Quản Lý Chất Lượng Dữ Liệu Trước và Sau Làm Sạch (ETL)
 
-- **Bronze Layer (`data/bronze/`):**
-  - Tải nạp theo shard, bổ sung siêu dữ liệu kiểm toán `ingested_at`, `batch_id`.
-  - Định dạng Parquet nén Snappy tối ưu I/O.
-- **PostgreSQL Storage Layer:**
-  - Docker Compose: Khởi chạy PostgreSQL 16 container (`docker compose up -d`).
-  - Bảng `real_estate_gold` với chỉ mục B-Tree trên `(province_name, district_name, price)`.
-  - Tự động fallback sang SQLite nếu môi trường chưa bật Docker.
+| Chỉ Số Chất Lượng | Tầng Đồng (Bronze) | Tầng Bạc (Silver) | Tầng Vàng (Gold) | Biện Pháp Kỹ Thuật |
+| :--- | :---: | :---: | :---: | :--- |
+| **Số lượng bản ghi** | **350,075** | **307,457** | **300,295** | Khử trùng, lọc giá null, lọc ngoại lệ |
+| **Tỷ lệ giữ lại (%)** | 100.00% | **87.83%** | **97.67%** | Tỷ lệ giữ lại toàn quy trình: **85.78%** |
+| **Tin trùng lặp** | 29,686 dòng | **0 dòng** | 0 dòng | `dropDuplicates()` trên 5 thuộc tính |
+| **Giá null hoặc <= 0** | 12,932 dòng | **0 dòng** | 0 dòng | Lọc ép kiểu Double dương |
+| **Ngoại lệ nghiệp vụ** | Tiềm ẩn | 7,162 dòng | **0 dòng** | Lọc theo 4 quy tắc miền giá trị |
+| **Độ lệch chuẩn Giá** | - | 2,006.6 Tỷ | **25.98 Tỷ** | **Giảm phương sai nhiễu 77 lần** |
 
----
-
-## 5. Tầng PySpark ETL và Kỹ Thuật Đặc Trưng
-
-- **ETL 1 (Silver - `src/etl/clean.py`):**
-  - Khử trùng lặp trên cụm phân tán (`dropDuplicates`).
-  - Ép kiểu dữ liệu số thực, xử lý null thông minh.
-- **ETL 2 (Gold - `src/etl/features.py`):**
-  - **Lọc ngoại lai:** $10 \le \text{area} \le 5000\text{ m}^2$, $0.1 \le \text{price} \le 500\text{ tỷ VNĐ}$.
-  - **Khai phá văn bản (NLP Regex):**
-    - `has_so_do`: Sổ đỏ, sổ hồng, pháp lý chuẩn (0/1).
-    - `car_access`: Ngõ ô tô vào được, đường rộng (0/1).
-    - `is_frontage`: Nhà mặt tiền kinh doanh (0/1).
-  - **Biến đổi mục tiêu:** $\log(1 + \text{price})$ ổn định phương sai.
+*Minh họa phễu & khuyết thiếu:* `docs/images/01_pipeline_funnel_retention.png` & `02_data_quality_missing_analysis.png`
 
 ---
 
-## 6. Kết Quả Khảo Sát và Phân Phối Dữ Liệu (EDA)
+## 5. Phân Tích Thống Kê Thị Trường Bất Động Sản (EDA Suite)
 
-- **Phân phối giá gốc:** Lệch phải cực đại (Median: 7.25 Tỷ, Max: 881,020 Tỷ).
-- **Sau biến đổi log:** Phân phối tiệm cận phân phối chuẩn Gauss, giúp mô hình hội tụ tốt.
-- **Top tỉnh thành tập trung:** Hà Nội (~35%) và TP.HCM (~34%) chiếm gần 70% thanh khoản.
-- **Tương quan:** Diện tích, độ rộng đường, mặt tiền và cờ sổ đỏ tương quan thuận với giá trị nhà.
+- **Toàn cảnh thị trường Tầng Vàng (300,295 tin đăng sạch):**
+  - **Giá trung vị:** **7.30 Tỷ VNĐ** *(Giá trung bình: 14.57 Tỷ - Lệch phải cực đoan)*
+  - **Đơn giá trung vị:** **94.2 Triệu VNĐ/m²** *(Khoảng Q1-Q3: 49.0 - 191.7 tr/m²)*
+  - **Diện tích trung vị:** **80.0 m²** *(Khoảng Q1-Q3: 56.0 - 120.0 m²)*
+- **Cơ cấu thị phần theo loại hình:**
+  - Nhà riêng / Nhà phố: **143,450 tin (47.8%)**
+  - Đất nền / Đất ở: **76,825 tin (25.6%)**
+  - Căn hộ chung cư: **53,180 tin (17.7%)**
+  - Biệt thự / Liền kề: **21,390 tin (7.1%)**
+- **Đặc trưng pháp lý & tiếp cận:**
+  - Có sổ đỏ/sổ hồng: **56.87%** | Ngõ ô tô vào được: **36.16%** | Mặt tiền: **50.84%**
 
-*(Minh họa biểu đồ: docs/images/eda_price_distribution.png và eda_correlation_matrix.png)*
-
----
-
-## 7. Thiết Kế và Huấn Luyện Machine Learning
-
-- **Nguyên tắc No Data Leakage:**
-  - Chia độc lập 80% Train - 20% Test cố định seed 42.
-  - Bộ mã hóa OrdinalEncoder và Scaler chỉ Fit trên tập Train.
-- **Mô hình đối chứng:**
-  - **Baseline:** L2-Regularized Linear Regression (Ridge, alpha = 10.0).
-  - **Challenger:** LightGBM Regressor (Histogram-based, Leaf-wise tree growth).
-- **Hàm mất mát và Đánh giá:** Dự đoán $\log(\text{giá})$, chuyển đổi ngược $\exp(y) - 1$ để tính sai số VNĐ.
+*Minh họa 4-Panel EDA:* `docs/images/04_market_distribution.png`
 
 ---
 
-## 8. Kết Quả Đo Lường và So Sánh Hiệu Năng
+## 6. Đánh Giá Hiệu Năng Pipeline & Lưu Trữ Đa Tầng
 
-| Chỉ Số Đánh Giá | Ridge Baseline | LightGBM Regressor | Mức Cải Thiện |
+*Môi trường đo đạc thực tế: Intel Core i5-12500H (12 cores, 16 threads), 16 GB RAM, PySpark 3.5, Python 3.12*
+
+| Giai Đoạn Pipeline | Thời Gian (s) | Số Dòng Xử Lý | Tốc Độ (Dòng/s) | Dung Lượng Lưu Trữ |
+| :--- | :---: | :---: | :---: | :---: |
+| **1. Raw Ingestion** | 35.00 s | 350,075 | 10,002 dòng/s | 153.89 MB (Bronze Parquet) |
+| **2. PySpark Clean** | 50.33 s | 350,075 | 6,956 dòng/s | 130.04 MB (Silver Parquet) |
+| **3. PySpark Features**| 76.67 s | 307,457 | 4,010 dòng/s | 128.20 MB (Gold Parquet) |
+| **4. Database Storage** | 289.43 s | 300,295 | 1,038 dòng/s | 17.40 MB (SQLite Serving) |
+| **Tổng Thời Gian ETL** | **451.43 s (~7.5 phút)** | - | **775 dòng/s** | **Tiết kiệm 29% đĩa (Nén 1.4x)** |
+
+*Minh họa Dashboard Giám sát:* `docs/images/05_pipeline_monitoring_dashboard.png`
+
+---
+
+## 7. Ứng Dụng Học Máy Định Giá (Downstream Machine Learning)
+
+- **Quy trình chia 3 tập nghiêm ngặt (Zero Data Leakage):**
+  - Train: **70% (210,206 mẫu)** | Validation: **15% (45,044 mẫu)** | Holdout Test: **15% (45,045 mẫu)**
+- **Kết quả đối sánh trên Tập Kiểm Thử Độc Lập (45,045 mẫu):**
+
+| Tiêu Chí Đánh Giá | Hồi Quy Tuyến Tính (Ridge Baseline) | Cây Quyết Định (LightGBM Regressor) | Mức Cải Thiện |
 | :--- | :---: | :---: | :---: |
-| **R² Score (Holdout)** | 0.6208 | **0.8227** | **+32.5%** |
-| **RMSE (thang log)** | 0.6657 | **0.4552** | **-31.6%** |
-| **MAE (Sai số TB)** | 10.66 Tỷ VNĐ | **5.05 Tỷ VNĐ** | **-52.6%** (Giảm > 1/2) |
-| **MAPE (%)** | 62.77% | **39.84%** | Giảm mạnh |
+| **$R^2$ Score (Thang log)** | **0.6266** | **0.8537** | **+36.24%** |
+| **RMSE (Thang log)** | 0.6556 | **0.4104** | **-37.40%** |
+| **MAE (Giá gốc - Tỷ VNĐ)** | 10.18 Tỷ | **4.64 Tỷ** | **-54.37%** |
+| **MdAPE (Phần trăm trung vị)** | 37.28% | **20.47%** | **-16.81 điểm %** |
 
-- **Top đặc trưng quan trọng:** `area` (Diện tích), `district_clean` (Vị trí Quận), `road_width` (Đường vào), `car_access` (Ngõ ô tô).
-- **Sai số theo khu vực:** Hà Nội (MAPE 18.2%), TP.HCM (23.0%), Hưng Yên (11.8%).
-
----
-
-## 9. Trực Quan Hóa và Demo Ứng Dụng Streamlit
-
-- **Tab 1: Định Giá Bất Động Sản Trực Tuyến**
-  - Form nhập thông số kỹ thuật (Vị trí, Loại nhà, Diện tích, Số tầng, Mặt tiền, Tiện ích).
-  - Trả về: Giá ước tính (Tỷ VNĐ), khoảng tin cậy sai số ±8%, so sánh với giá trung vị khu vực.
-- **Tab 2: Dashboard Thị Trường BĐS**
-  - Chỉ số toàn quốc (Tổng tin, Giá trung vị, Đơn giá/m²).
-  - Biểu đồ phân bổ giá theo phân khúc và tỷ lệ tiện ích.
-- **Tab 3: Hiệu Năng và Kiến Trúc Hệ Thống**
+*Biểu đồ sai số & Feature Importance:* `docs/images/05_feature_importance.png` & `06_residual_analysis.png`
 
 ---
 
-## 10. Kết Luận và Hướng Phát Triển
+## 8. Ứng Dụng Phục Vụ & Bảng Điều Khiển Streamlit (4 Tabs)
 
-### Kết quả đạt được:
-- Hoàn thành đầy đủ 6 tầng Big Data trong 2 tuần đúng cam kết.
-- Mô hình đạt độ tin cậy cao (R² > 0.82), pipeline chạy 1 lệnh.
-- 100% test case tự động vượt qua (7/7 passed).
+- **Tab 1: Kiến Trúc & Tích Hợp Dữ Liệu:** Sơ đồ Medallion, thẻ KPI kho nguồn Hugging Face, bảng thuyết minh công nghệ.
+- **Tab 2: Chất Lượng & Biến Đổi Dữ Liệu:** Đo lường tỷ lệ giữ lại 85.8%, biểu đồ phễu, biểu đồ khuyết thiếu, bảng thống kê 5 số trước/sau lọc ngoại lệ.
+- **Tab 3: Phân Tích Thị Trường Bất Động Sản:** Bộ 4 biểu đồ EDA, tra cứu mặt bằng giá phân cấp Tỉnh/Thành $\rightarrow$ Quận/Huyện, ma trận tương quan.
+- **Tab 4: Hiệu Năng, Giám Sát & Định Giá:**
+  - Bảng điều khiển giám sát Dark Theme (`05_pipeline_monitoring_dashboard.png`).
+  - Bảng KPI xuất tự động từ `pipeline_summary_metrics.csv`.
+  - Bảng so sánh mô hình và Form định giá trực tuyến thông minh (kèm cảnh báo pháp lý).
 
-### Hướng mở rộng:
-- Tích hợp tọa độ GIS và bản đồ nhiệt không gian.
-- Mở rộng xử lý Streaming với Apache Kafka khi tin đăng phát sinh liên tục.
+---
 
-**CẢM ƠN THẦY CÔ VÀ CÁC BẠN ĐÃ THEO DÕI (Q&A)**
+## 9. Kiểm Thử Hệ Thống & Độ Tin Cậy (Quality Assurance)
+
+- **Bộ kiểm thử tự động `pytest -v` gồm 10 bài test độc lập đạt 100% Passed:**
+  1. `test_directories_exist`: Kiểm tra cấu trúc thư mục dữ liệu và mô hình.
+  2. `test_bronze_parquet`: Kiểm tra schema và metadata `batch_id`, `ingested_at`.
+  3. `test_silver_parquet`: Kiểm tra cột chuẩn hóa `price_billion`, `price_per_m2`.
+  4. `test_gold_parquet`: Kiểm tra 33 cột đặc trưng NLP và biến đổi log.
+  5. `test_data_quality_and_lineage_report`: Kiểm tra tính đơn điệu của phễu lọc.
+  6. `test_storage_database`: Kiểm tra CSDL khớp 300,295 dòng, khóa chính UUID duy nhất.
+  7. `test_three_way_split_and_metrics_no_leakage`: Kiểm tra 3 tập rời nhau tuyệt đối.
+  8. `test_train_serving_consistency_and_inference`: Kiểm tra đồng nhất Train - Serving.
+  9. `test_evaluation_diagnostics_and_residual_plot`: Kiểm tra tệp chẩn đoán sai số.
+  10. `test_pipeline_summary_metrics_and_charts`: Kiểm tra sự tồn tại của 6 tệp biểu đồ và file CSV KPI.
+
+---
+
+## 10. Kết Luận, Hạn Chế Minh Bạch & Hướng Mở Rộng
+
+- **Kết quả đạt được:**
+  - Xây dựng thành công pipeline dữ liệu lớn 6 tầng chuẩn Medallion vận hành tự động.
+  - Xử lý sạch và làm giàu **300,295 bản ghi bất động sản** có chất lượng cao.
+  - Nâng hệ số giải thích $R^2$ từ 0.626 lên **0.8537**, giảm sai số trung bình hơn 54%.
+- **Hạn chế thực nghiệm (Minh bạch học thuật):**
+  - Môi trường thử nghiệm xử lý **1 phân mảnh đầy đủ (350,075 bản ghi thô)** để tối ưu thời gian chạy trên máy cá nhân (~7.5 phút), chưa nạp trọn vẹn 10 phân mảnh (3.5M dòng).
+  - Chưa tích hợp tọa độ không gian GIS (kinh độ, vĩ độ) do nguồn dữ liệu web hạn chế.
+- **Khả năng mở rộng:** Kiến trúc phân tán PySpark sẵn sàng mở rộng xử lý toàn bộ 10 shards hoặc kết nối Apache Kafka streaming khi triển khai trên cụm điện toán đám mây.
+
+---
+# XIN CẢM ƠN THẦY CÔ VÀ HỘI ĐỒNG!
+*Hệ Thống Tích Hợp & Phân Tích Dữ Liệu Lớn Bất Động Sản Việt Nam*  
+**Q&A - Câu Hỏi Phản Biện**
