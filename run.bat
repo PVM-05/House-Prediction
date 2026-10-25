@@ -36,11 +36,12 @@ echo   [6] Chay Bo Kiem Thu Tu Dong Toan Dien (Pytest 10/10 Test Cases)
 echo   [7] Tao Bo So Lieu Tom Tat ^& 7 Bieu Do Phan Tich Chuan Hoc Thuat
 echo   [8] Xuat 10,000 Dong Du Lieu Mau Ra File Excel (.xlsx) va CSV (.csv)
 echo   [9] Tao Bao Cao Chi Tiet Do An / Luan Van Microsoft Word (.docx)
+echo   [10] Tao Slide Thuyet Trinh Bao Ve Do An PowerPoint (.pptx)
 echo   [0] Thoat
 echo.
 echo ===============================================================================
 set choice=
-set /p choice="Nhap lua chon cua ban (0-9): "
+set /p choice="Nhap lua chon cua ban (0-10): "
 
 if "%choice%"=="1" goto RUN_APP
 if "%choice%"=="2" goto RUN_ALL
@@ -51,10 +52,11 @@ if "%choice%"=="6" goto RUN_TEST
 if "%choice%"=="7" goto RUN_CHARTS
 if "%choice%"=="8" goto RUN_EXCEL
 if "%choice%"=="9" goto RUN_DOCX
+if "%choice%"=="10" goto RUN_PPTX
 if "%choice%"=="0" goto EXIT_SCRIPT
 
 echo.
-echo [!] Lua chon khong hop le. Vui long nhap tu 0 den 9.
+echo [!] Lua chon khong hop le. Vui long nhap tu 0 den 10.
 echo.
 pause
 goto MENU
@@ -129,6 +131,14 @@ goto MENU
 echo.
 echo [*] Dang khoi tao Bao cao Word chi tiet (.docx)...
 python scripts/generate_docx_report.py
+echo.
+pause
+goto MENU
+
+:RUN_PPTX
+echo.
+echo [*] Dang khoi tao Slide thuyet trinh PowerPoint (.pptx)...
+python scripts/generate_pptx_slides.py
 echo.
 pause
 goto MENU

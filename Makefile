@@ -40,3 +40,6 @@ all: ingest etl load train evaluate
 report-docx:
 	$(PYTHON) scripts/generate_docx_report.py
 
+slides-pptx:
+	$(PYTHON) scripts/generate_pptx_slides.py
+

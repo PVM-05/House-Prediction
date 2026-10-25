@@ -1,8 +1,12 @@
 # Báo Cáo Kỹ Thuật: Hệ Thống Tích Hợp & Phân Tích Dữ Liệu Lớn Bất Động Sản Việt Nam
 
 **Đề tài:** Hệ Thống Tích Hợp & Phân Tích Dữ Liệu Lớn Bất Động Sản Việt Nam  
-**Môn học:** Tích Hợp Và Phân Tích Dữ Liệu Lớn (Big Data Integration & Analytics)  
-**Thời gian thực hiện:** Sprint 2 Tuần  
+**Học phần:** Tích Hợp Và Phân Tích Dữ Liệu Lớn (Big Data Integration & Analytics)  
+**Sinh viên thực hiện:** Phạm Văn Minh  
+**Mã sinh viên (MSV):** 23010350  
+**Email sinh viên:** 23010350@st.phenikaa-uni.edu.vn  
+**Đơn vị đào tạo:** Trường Công nghệ Thông tin - Trường Đại học Phenikaa  
+**Thời gian thực hiện:** Sprint 2 Tuần (Năm 2026)  
 **Nguồn dữ liệu gốc:** `tinixai/vietnam-real-estates` trên Hugging Face Hub (3.500.744 bản ghi trên 10 phân mảnh Parquet)  
 **Quy mô thực nghiệm kiểm chứng:** Phân mảnh Shard 0 (`shard_0000.parquet` - **350.075 bản ghi thô** $\rightarrow$ **307.457 bản ghi Bạc** $\rightarrow$ **300.295 bản ghi Vàng**)  
 **Công nghệ chủ đạo:** Apache PySpark 3.5, Apache Parquet Snappy, PostgreSQL 15 (SQLite fallback), LightGBM, Streamlit  

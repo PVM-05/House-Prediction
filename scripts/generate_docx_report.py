@@ -199,7 +199,7 @@ def setup_page_margins_and_footer(doc):
         footer = section.footer
         p_ft = footer.paragraphs[0]
         p_ft.alignment = WD_ALIGN_PARAGRAPH.RIGHT
-        r_txt = p_ft.add_run("Báo Cáo Đồ Án Tích Hợp Dữ Liệu Lớn | ")
+        r_txt = p_ft.add_run("Báo Cáo Đồ Án - SV: Phạm Văn Minh (MSV: 23010350) - ĐH Phenikaa | ")
         set_run_font(r_txt, font_size=9.5, italic=True)
         r_page = p_ft.add_run("Trang ")
         set_run_font(r_page, font_size=9.5, italic=True)
@@ -222,30 +222,35 @@ def generate_report():
     # TRANG BÌA (COVER PAGE)
     # ==========================================================================
     add_styled_p(doc, "BỘ GIÁO DỤC VÀ ĐÀO TẠO", font_size=13, bold=True, align=WD_ALIGN_PARAGRAPH.CENTER, space_before=10, space_after=2)
-    add_styled_p(doc, "TRƯỜNG ĐẠI HỌC KHOA HỌC TỰ NHIÊN / BỘ MÔN KHOA HỌC DỮ LIỆU", font_size=13, bold=True, align=WD_ALIGN_PARAGRAPH.CENTER, space_before=0, space_after=20)
+    add_styled_p(doc, "TRƯỜNG ĐẠI HỌC PHENIKAA", font_size=14, bold=True, align=WD_ALIGN_PARAGRAPH.CENTER, space_before=0, space_after=2)
+    add_styled_p(doc, "TRƯỜNG CÔNG NGHỆ THÔNG TIN", font_size=13, bold=True, align=WD_ALIGN_PARAGRAPH.CENTER, space_before=0, space_after=20)
     
-    add_styled_p(doc, "--------------------------------------------------", font_size=12, bold=False, align=WD_ALIGN_PARAGRAPH.CENTER, space_before=0, space_after=30)
+    add_styled_p(doc, "--------------------------------------------------", font_size=12, bold=False, align=WD_ALIGN_PARAGRAPH.CENTER, space_before=0, space_after=25)
     
     add_styled_p(doc, "BÁO CÁO KHOA HỌC & KỸ THUẬT DỰ ÁN", font_size=16, bold=True, align=WD_ALIGN_PARAGRAPH.CENTER, space_before=10, space_after=10)
-    add_styled_p(doc, "HỌC PHẦN: TÍCH HỢP VÀ PHÂN TÍCH DỮ LIỆU LỚN (BIG DATA ANALYTICS)", font_size=14, bold=True, align=WD_ALIGN_PARAGRAPH.CENTER, space_before=0, space_after=30)
+    add_styled_p(doc, "HỌC PHẦN: TÍCH HỢP VÀ PHÂN TÍCH DỮ LIỆU LỚN (BIG DATA ANALYTICS)", font_size=14, bold=True, align=WD_ALIGN_PARAGRAPH.CENTER, space_before=0, space_after=25)
     
     add_styled_p(doc, "ĐỀ TÀI:", font_size=14, bold=True, align=WD_ALIGN_PARAGRAPH.CENTER, space_before=0, space_after=6)
     add_styled_p(
         doc,
         "NGHIÊN CỨU XÂY DỰNG HỆ THỐNG LAKEHOUSE ĐA TẦNG (MEDALLION ARCHITECTURE) TÍCH HỢP DỮ LIỆU LỚN VÀ ĐỊNH GIÁ BẤT ĐỘNG SẢN VIỆT NAM BẰNG MÔ HÌNH HỌC MÁY LIGHTGBM",
-        font_size=17, bold=True, align=WD_ALIGN_PARAGRAPH.CENTER, space_before=0, space_after=40
+        font_size=17, bold=True, align=WD_ALIGN_PARAGRAPH.CENTER, space_before=0, space_after=30
     )
     
-    add_styled_p(doc, "--------------------------------------------------", font_size=12, bold=False, align=WD_ALIGN_PARAGRAPH.CENTER, space_before=0, space_after=40)
+    add_styled_p(doc, "--------------------------------------------------", font_size=12, bold=False, align=WD_ALIGN_PARAGRAPH.CENTER, space_before=0, space_after=30)
     
-    meta_table = doc.add_table(rows=4, cols=2)
-    meta_table.alignment = WD_TABLE_ALIGNMENT.CENTER
     meta_rows = [
         ["Học phần / Môn học:", "Tích Hợp và Phân Tích Dữ Liệu Lớn"],
-        ["Công nghệ chủ đạo:", "Apache PySpark, Parquet Snappy, PostgreSQL, LightGBM, Streamlit"],
-        ["Quy mô dữ liệu thực nghiệm:", "350,075 bản ghi thô (1 Shard), kho nguồn 3,500,744 bản ghi (10 Shards)"],
-        ["Thời gian thực hiện:", "Sprint 2 Tuần (Tháng 10/2026)"]
+        ["Sinh viên thực hiện:", "Phạm Văn Minh"],
+        ["Mã sinh viên (MSV):", "23010350"],
+        ["Email sinh viên:", "23010350@st.phenikaa-uni.edu.vn"],
+        ["Đơn vị đào tạo:", "Trường Công nghệ Thông tin - Trường Đại học Phenikaa"],
+        ["Công nghệ chủ đạo:", "Apache PySpark, Parquet Snappy, PostgreSQL/SQLite, LightGBM, Streamlit"],
+        ["Quy mô dữ liệu thực nghiệm:", "350,075 bản ghi thô (Shard 0000), kho nguồn 3,500,744 bản ghi (10 Shards)"],
+        ["Thời gian thực hiện:", "Sprint 2 Tuần (Năm 2026)"]
     ]
+    meta_table = doc.add_table(rows=len(meta_rows), cols=2)
+    meta_table.alignment = WD_TABLE_ALIGNMENT.CENTER
     for r_i, (k, v) in enumerate(meta_rows):
         c0 = meta_table.cell(r_i, 0)
         c1 = meta_table.cell(r_i, 1)
@@ -900,9 +905,18 @@ def generate_report():
     add_styled_p(doc, "[6] tinixai. (2024). Vietnam Real Estates Dataset (3.5M records). Hugging Face Datasets Hub.", font_size=11)
 
     output_path = BASE_DIR / "docs/Bao_Cao_Chi_Tiet_Du_An_House_Prediction.docx"
-    doc.save(str(output_path))
-    print(f"[SUCCESS] Bao cao Word da duoc khoi tao thanh cong tai: {output_path}")
-    print(f"[METRIC] Dung luong file: {output_path.stat().st_size / (1024*1024):.2f} MB")
+    alt_path = BASE_DIR / "docs/Bao_Cao_Chi_Tiet_Du_An_House_Prediction_PhamVanMinh.docx"
+    
+    saved_path = output_path
+    try:
+        doc.save(str(output_path))
+        print(f"[SUCCESS] Bao cao Word da duoc khoi tao thanh cong tai: {output_path}")
+    except PermissionError:
+        doc.save(str(alt_path))
+        saved_path = alt_path
+        print(f"[NOTE] Tep cu dang duoc mo trong Word. Da luu thanh cong ban cap nhat tai: {alt_path}")
+        
+    print(f"[METRIC] Dung luong file: {saved_path.stat().st_size / (1024*1024):.2f} MB")
 
 if __name__ == "__main__":
     generate_report()

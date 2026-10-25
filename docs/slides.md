@@ -9,7 +9,10 @@ color: #1e293b
 
 # HỆ THỐNG TÍCH HỢP & PHÂN TÍCH DỮ LIỆU LỚN
 ## BẤT ĐỘNG SẢN VIỆT NAM (KIẾN TRÚC MEDALLION LAKEHOUSE)
-**Đồ Án Môn Học Tích Hợp Và Phân Tích Dữ Liệu Lớn**
+**Đồ Án Môn Học Tích Hợp Và Phân Tích Dữ Liệu Lớn**  
+*Sinh viên thực hiện:* **Phạm Văn Minh** | *MSV:* **23010350**  
+*Email:* **23010350@st.phenikaa-uni.edu.vn**  
+*Đơn vị:* **Trường Công nghệ Thông tin - Trường Đại học Phenikaa**  
 *Pipeline End-to-End Tự Động Hóa 6 Tầng Bằng Apache PySpark & Streamlit*
 
 ---
