@@ -36,3 +36,7 @@ app:
 
 all: ingest etl load train evaluate
 	@echo "[✓] All pipelines executed successfully!"
+
+report-docx:
+	$(PYTHON) scripts/generate_docx_report.py
+

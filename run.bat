@@ -35,11 +35,12 @@ echo   [5] Chay Huan Luyen Mo Hinh Machine Learning (Ridge Baseline ^& LightGBM)
 echo   [6] Chay Bo Kiem Thu Tu Dong Toan Dien (Pytest 10/10 Test Cases)
 echo   [7] Tao Bo So Lieu Tom Tat ^& 7 Bieu Do Phan Tich Chuan Hoc Thuat
 echo   [8] Xuat 10,000 Dong Du Lieu Mau Ra File Excel (.xlsx) va CSV (.csv)
+echo   [9] Tao Bao Cao Chi Tiet Do An / Luan Van Microsoft Word (.docx)
 echo   [0] Thoat
 echo.
 echo ===============================================================================
 set choice=
-set /p choice="Nhap lua chon cua ban (0-8): "
+set /p choice="Nhap lua chon cua ban (0-9): "
 
 if "%choice%"=="1" goto RUN_APP
 if "%choice%"=="2" goto RUN_ALL
@@ -49,10 +50,11 @@ if "%choice%"=="5" goto RUN_TRAIN
 if "%choice%"=="6" goto RUN_TEST
 if "%choice%"=="7" goto RUN_CHARTS
 if "%choice%"=="8" goto RUN_EXCEL
+if "%choice%"=="9" goto RUN_DOCX
 if "%choice%"=="0" goto EXIT_SCRIPT
 
 echo.
-echo [!] Lua chon khong hop le. Vui long nhap tu 0 den 8.
+echo [!] Lua chon khong hop le. Vui long nhap tu 0 den 9.
 echo.
 pause
 goto MENU
@@ -119,6 +121,14 @@ goto MENU
 echo.
 echo [*] Dang xuat 10,000 dong du lieu mau sang Excel va CSV...
 python -c "import pandas as pd; df = pd.read_parquet('data/gold/vietnam_real_estates_gold.parquet'); df.head(10000).to_excel('data/vietnam_real_estates_sample.xlsx', index=False); df.head(10000).to_csv('data/vietnam_real_estates_sample.csv', index=False, encoding='utf-8-sig'); print('[OK] Da xuat thanh cong: data/vietnam_real_estates_sample.xlsx va .csv')"
+echo.
+pause
+goto MENU
+
+:RUN_DOCX
+echo.
+echo [*] Dang khoi tao Bao cao Word chi tiet (.docx)...
+python scripts/generate_docx_report.py
 echo.
 pause
 goto MENU
