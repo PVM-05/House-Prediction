@@ -67,7 +67,7 @@ color: #1e293b
 
 ## 4. Quản Lý Chất Lượng Dữ Liệu Trước và Sau Làm Sạch (ETL)
 
-| Chỉ Số Chất Lượng | Tầng Đồng (Bronze) | Tầng Bạc (Silver) | Tầng Vàng (Gold) | Biện Pháp Kỹ Thuật |
+| Chỉ Số Chất Lượng | Tầng Đồng Tầng Đồng | Tầng Bạc Tầng Bạc | Tầng Vàng Tầng Vàng | Biện Pháp Kỹ Thuật |
 | :--- | :---: | :---: | :---: | :--- |
 | **Số lượng bản ghi** | **350,075** | **307,457** | **300,295** | Khử trùng, lọc giá null, lọc ngoại lệ |
 | **Tỷ lệ giữ lại (%)** | 100.00% | **87.83%** | **97.67%** | Tỷ lệ giữ lại toàn quy trình: **85.78%** |
@@ -120,7 +120,7 @@ color: #1e293b
   - Train: **70% (210,206 mẫu)** | Validation: **15% (45,044 mẫu)** | Holdout Test: **15% (45,045 mẫu)**
 - **Kết quả đối sánh trên Tập Kiểm Thử Độc Lập (45,045 mẫu):**
 
-| Tiêu Chí Đánh Giá | Hồi Quy Tuyến Tính (Ridge Baseline) | Cây Quyết Định (LightGBM Regressor) | Mức Cải Thiện |
+| Tiêu Chí Đánh Giá | Hồi Quy Tuyến Tính (Hồi quy Ridge cơ sở) | Cây Quyết Định (Mô hình LightGBM) | Mức Cải Thiện |
 | :--- | :---: | :---: | :---: |
 | **$R^2$ Score (Thang log)** | **0.6266** | **0.8537** | **+36.24%** |
 | **RMSE (Thang log)** | 0.6556 | **0.4104** | **-37.40%** |

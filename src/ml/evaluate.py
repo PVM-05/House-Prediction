@@ -99,7 +99,7 @@ def run_evaluation(gold_path: Path = None, model_path: Path = None):
     plt.figure(figsize=(10, 6.5), dpi=150)
     bars = plt.barh(feat_imp["feature_vi"], feat_imp["importance"], color="#1e40af", edgecolor="#1e3a8a")
     plt.title("Mức Độ Quan Trọng Của Các Đặc Trưng (Mô Hình LightGBM)", fontsize=12, fontweight="bold", pad=12)
-    plt.xlabel("Số lần phân nhánh tối ưu trên cây quyết định (Split Importance)", fontsize=10)
+    plt.xlabel("Số lần phân nhánh tối ưu trên cây quyết định", fontsize=10)
     plt.grid(axis="x", linestyle="--", alpha=0.4)
     for bar in bars:
         width = bar.get_width()
@@ -150,11 +150,11 @@ def run_evaluation(gold_path: Path = None, model_path: Path = None):
     ax2.axvline(0.0, color="#dc2626", linestyle="--", linewidth=1.8, label="Sai số = 0")
     ax2.axvline(mean_res, color="#1d4ed8", linestyle=":", linewidth=1.5, label=f"Trung bình sai số = {mean_res:+.4f}")
     ax2.set_title(
-        f"Phân Phối Sai Số Phần Dư (Residual = Log Dự Đoán - Log Thực Tế)\n"
+        f"Phân Phối Sai Số Phần Dư (Sai số phần dư = Log Dự Đoán - Log Thực Tế)\n"
         f"Trung vị sai số = {median_res:+.4f} | MdAPE = {overall_test_metrics['mdape_percent']:.2f}%",
         fontsize=11, fontweight="bold"
     )
-    ax2.set_xlabel("Sai số phần dư trên thang Log (Log Residual)", fontsize=10)
+    ax2.set_xlabel("Sai số phần dư trên thang logarit", fontsize=10)
     ax2.set_ylabel("Số lượng bất động sản kiểm thử", fontsize=10)
     ax2.legend(loc="upper right", fontsize=9)
     ax2.grid(True, linestyle="--", alpha=0.35)

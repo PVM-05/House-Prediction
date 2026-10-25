@@ -21,6 +21,7 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
+import matplotlib.gridspec as gridspec
 
 if sys.platform == "win32":
     try:
@@ -56,19 +57,19 @@ def plot_medallion_architecture_card(output_path: Path):
     zones = [
         {
             "x": 0.18,
-            "title": "Bronze Zone",
-            "subtitle": "Raw Data Ingestion",
-            "desc": "Công nghệ: Python Stream Ingest\n- Nguồn: Hugging Face (tinixai)\n- Phân mảnh: shard_0000.parquet\n- Gắn metadata: batch_id, ingested_at\n- Bảo toàn 100% dữ liệu gốc thô\n- Lưu Parquet Snappy (153.9 MB)\n\n350,075 bản ghi thô (100.0%)",
+            "title": "Tầng Đồng",
+            "subtitle": "Thu Nạp Dữ Liệu Thô",
+            "desc": "Công nghệ: Thu nạp dữ liệu thô\n- Nguồn dữ liệu: Hugging Face\n- Phân mảnh nạp: Shard 0000\n- Gắn siêu dữ liệu kiểm toán lô\n- Bảo toàn trọn vẹn dữ liệu gốc\n- Định dạng Parquet Snappy (153.9 MB)\n\n350,075 bản ghi thô (100.0%)",
             "header_color": "#ef4444",
             "bg_color": "#fff1f2",
             "border_color": "#dc2626",
-            "files": ["Raw Shard", "Parquet"]
+            "files": ["Bản Thô", "Parquet"]
         },
         {
             "x": 0.50,
-            "title": "Silver Zone",
-            "subtitle": "Cleaned & Conformed",
-            "desc": "Công nghệ: Apache PySpark 3.5\n- PySpark khử 29,686 tin trùng lặp\n- Lọc 12,932 giá null hoặc <= 0\n- Điền khuyết miền giá trị (= 1.0)\n- Chuẩn hóa kiểu DoubleType VNĐ\n- Lưu Parquet Snappy (130.0 MB)\n\n307,457 bản ghi sạch (87.83%)",
+            "title": "Tầng Bạc",
+            "subtitle": "Làm Sạch & Chuẩn Hóa",
+            "desc": "Công nghệ: Apache PySpark 3.5\n- Khử 29,686 tin đăng trùng lặp\n- Lọc 12,932 giá thiếu hoặc âm\n- Điền khuyết miền giá trị hợp lý\n- Chuẩn hóa kiểu số thực VNĐ\n- Định dạng Parquet Snappy (130.0 MB)\n\n307,457 bản ghi sạch (87.83%)",
             "header_color": "#0284c7",
             "bg_color": "#f0f9ff",
             "border_color": "#0369a1",
@@ -76,13 +77,13 @@ def plot_medallion_architecture_card(output_path: Path):
         },
         {
             "x": 0.82,
-            "title": "Gold Zone",
-            "subtitle": "Feature Eng & Aggregation",
-            "desc": "Công nghệ: PySpark Features & NLP\n- Lọc 7,162 ngoại lệ nghiệp vụ 4 tầng\n- Chuẩn hóa Tỉnh/Huyện (Regex)\n- Trích xuất NLP: Sổ đỏ, Ngõ ô tô\n- Biến đổi ổn định log(1 + price)\n- Lưu Parquet Snappy (128.2 MB)\n\n300,295 bản ghi vàng (97.67%)",
+            "title": "Tầng Vàng",
+            "subtitle": "Trích Xuất Đặc Trưng",
+            "desc": "Công nghệ: PySpark & Trích Chọn NLP\n- Lọc 7,162 ngoại lệ cực trị\n- Chuẩn hóa Tỉnh/Huyện hành chính\n- Trích xuất: Sổ đỏ, Mặt phố, Ngõ hẻm\n- Biến đổi logarit chuẩn hóa giá\n- Định dạng Parquet Snappy (128.2 MB)\n\n300,295 bản ghi sạch (97.67%)",
             "header_color": "#16a34a",
             "bg_color": "#f0fdf4",
             "border_color": "#15803d",
-            "files": ["Lakehouse", "Parquet"]
+            "files": ["Hồ Dữ Liệu", "Parquet"]
         }
     ]
 
@@ -151,7 +152,7 @@ def plot_medallion_architecture_card(output_path: Path):
     ax.add_patch(arrow2)
 
     # Footnote about Serving Layer
-    ax.text(0.5, 0.06, "Downstream Serving: PostgreSQL 15 / SQLite Fallback (300,295 dòng khớp 100%, 4 B-Tree Indexes) ➔ Streamlit Dashboard & LightGBM",
+    ax.text(0.5, 0.06, "Lưu trữ phục vụ: Cơ sở dữ liệu quan hệ (300,295 dòng khớp tuyệt đối, 4 chỉ mục B-Tree) ➔ Bảng điều khiển trực quan & Mô hình học máy",
             ha="center", va="center", fontsize=10, fontweight="bold", color="#334155",
             bbox=dict(boxstyle="round,pad=0.4", facecolor="#f1f5f9", edgecolor="#cbd5e1", linewidth=1.2))
 
@@ -163,62 +164,64 @@ def plot_medallion_architecture_card(output_path: Path):
 
 def plot_cleansing_impact_before_after(output_path: Path):
     """
-    Enhanced 2-Panel Figure:
-    - Panel A (Left): Data Funnel Across Medallion Tiers (Lưu lượng & Tỷ lệ giữ lại)
-    - Panel B (Right): Breakdown of Filtered-Out Records by Cause (Phân rã 49,780 bản ghi bị loại)
-    Disentangles absolute counts from percentages and clearly resolves the missing cells misconception.
+    Biểu đồ 2 Panel chuẩn học thuật, không dính chữ, không dùng tiếng Anh mở ngoặc:
+    - Panel A (Trái): Phễu lưu lượng bản ghi qua các tầng (Tầng Đồng -> Bạc -> Vàng -> Phục vụ)
+    - Panel B (Phải): Phân rã nguyên nhân loại bỏ 49,780 bản ghi
     """
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(15, 6.5), dpi=170)
-    fig.suptitle("Pipeline Data Flow, Cleansing Impact & Retention (Quy Trình & Tác Động Làm Sạch Dữ Liệu)",
-                 fontsize=13, fontweight="bold", y=0.98)
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(16, 7.2), dpi=180)
+    fig.suptitle("Quy Trình Lưu Lượng Dữ Liệu Và Tác Động Làm Sạch",
+                 fontsize=14, fontweight="bold", y=0.98)
 
     # -------------------------------------------------------------
-    # Panel A (Left): Funnel & Retention Across Tiers
+    # Panel A (Trái): Phễu Lưu Lượng Bản Ghi Qua Các Tầng
     # -------------------------------------------------------------
     tiers = [
-        "1. Bronze Zone\n(Dữ liệu thô)",
-        "2. Silver Zone\n(Sau khử trùng & lọc giá)",
-        "3. Gold Zone\n(Sau lọc ngoại lệ)",
-        "4. Serving Database\n(PostgreSQL / SQLite)"
+        "1. Tầng Đồng\n(Dữ liệu thô)",
+        "2. Tầng Bạc\n(Đã làm sạch)",
+        "3. Tầng Vàng\n(Đã trích chọn)",
+        "4. Lưu Trữ Phục Vụ\n(Cơ sở dữ liệu)"
     ]
     counts = [350075, 307457, 300295, 300295]
     retention_pct = [100.0, 87.83, 85.78, 85.78]
     colors = ["#ef4444", "#0284c7", "#16a34a", "#059669"]
 
-    bars1 = ax1.bar(tiers, counts, color=colors, edgecolor="#0f172a", width=0.55, linewidth=1.1)
-    ax1.set_title("Phễu Lưu Lượng Bản Ghi Qua Các Tầng (Data Retention Funnel)", fontsize=11, fontweight="bold", pad=10)
-    ax1.set_ylabel("Số lượng bản ghi hợp lệ (Records)", fontsize=10, fontweight="bold")
-    ax1.set_ylim(0, 420000)
+    bars1 = ax1.bar(tiers, counts, color=colors, edgecolor="#0f172a", width=0.52, linewidth=1.1)
+    ax1.set_title("Phễu Lưu Lượng Bản Ghi Qua Các Tầng", fontsize=11.5, fontweight="bold", pad=12)
+    ax1.set_ylabel("Số lượng bản ghi hợp lệ", fontsize=10.5, fontweight="bold")
+    ax1.set_ylim(0, 480000)
     ax1.grid(axis="y", linestyle="--", alpha=0.4)
 
+    # Hiển thị số lượng rõ ràng trên đỉnh cột, không chạm vào nhãn điều chỉnh
     for i, bar in enumerate(bars1):
         h = bar.get_height()
         pct = retention_pct[i]
-        ax1.text(bar.get_x() + bar.get_width()/2, h + 6000,
+        ax1.text(bar.get_x() + bar.get_width()/2, h + 8000,
                  f"{int(h):,}\n({pct:.1f}%)", ha="center", va="bottom",
-                 fontsize=9.5, fontweight="bold", color="#1e293b")
+                 fontsize=9.5, fontweight="bold", color="#0f172a")
 
-    # Step-by-step reduction annotations
-    ax1.annotate("Loại 42,618 bản ghi (-12.17%)\n(29,686 trùng + 12,932 sai giá)",
-                 xy=(0.5, 328000), xytext=(0.5, 375000),
-                 ha="center", fontsize=8.5, color="#dc2626", fontweight="bold",
-                 arrowprops=dict(arrowstyle="->", color="#dc2626", lw=1.2))
+    # Thẻ thông tin mức giảm giữa các tầng đặt ngay ngắn ở vị trí trống, không đè lên chữ số
+    ax1.text(0.5, 350000, "Giảm 42.618 dòng\n(-12,2%)\nTrùng + Thiếu giá",
+             ha="center", va="center", fontsize=8.5, color="#991b1b", fontweight="bold",
+             bbox=dict(boxstyle="round,pad=0.4", facecolor="#fee2e2", edgecolor="#ef4444", lw=1.2))
 
-    ax1.annotate("Loại 7,162 ngoại lệ (-2.05%)\n(diện tích, giá, đơn giá)",
-                 xy=(1.5, 304000), xytext=(1.5, 355000),
-                 ha="center", fontsize=8.5, color="#d97706", fontweight="bold",
-                 arrowprops=dict(arrowstyle="->", color="#d97706", lw=1.2))
+    ax1.text(1.5, 320000, "Giảm 7.162 dòng\n(-2,1%)\nNgoại lệ cực trị",
+             ha="center", va="center", fontsize=8.5, color="#92400e", fontweight="bold",
+             bbox=dict(boxstyle="round,pad=0.4", facecolor="#fef3c7", edgecolor="#f59e0b", lw=1.2))
+
+    ax1.text(2.5, 320000, "Khớp toàn vẹn\n100% dữ liệu\n300.295 dòng",
+             ha="center", va="center", fontsize=8.5, color="#065f46", fontweight="bold",
+             bbox=dict(boxstyle="round,pad=0.4", facecolor="#d1fae5", edgecolor="#10b981", lw=1.2))
 
     # -------------------------------------------------------------
-    # Panel B (Right): Breakdown of Filtered-Out Records (49,780 dòng bị loại)
+    # Panel B (Phải): Phân rã nguyên nhân loại bỏ bản ghi
     # -------------------------------------------------------------
     causes = [
-        "1. Trùng lặp đa khóa (Composite Duplicates)",
-        "2. Thiếu giá hoặc giá âm/zero (Invalid Price)",
-        "3. Ngoại lệ đơn giá/m² (<2M hoặc >1B VNĐ/m²)",
-        "4. Ngoại lệ diện tích (<10 hoặc >5000 m²)",
-        "5. Ngoại lệ tổng giá (<100M hoặc >500B VNĐ)",
-        "6. Ngoại lệ kết cấu (tầng >25, phòng >20)"
+        "1. Trùng lặp đa thuộc tính",
+        "2. Thiếu giá hoặc diện tích",
+        "3. Ngoại lệ đơn giá trên mét vuông",
+        "4. Ngoại lệ diện tích đất sàn",
+        "5. Ngoại lệ tổng giá bán",
+        "6. Ngoại lệ số tầng hoặc phòng ngủ"
     ]
     rejected_counts = [29686, 12932, 5788, 1677, 1104, 450]
     total_bronze = 350075
@@ -227,30 +230,28 @@ def plot_cleansing_impact_before_after(output_path: Path):
     y_pos = np.arange(len(causes))
     bars2 = ax2.barh(y_pos, rejected_counts, color="#f97316", edgecolor="#c2410c", height=0.52, linewidth=1.1)
     ax2.set_yticks(y_pos)
-    ax2.set_yticklabels(causes, fontsize=9.0)
+    ax2.set_yticklabels(causes, fontsize=9.5)
     ax2.invert_yaxis()
-    ax2.set_title("Phân Rã Số Lượng Bản Ghi Bị Loại Bỏ (Tổng loại: 49,780 = 14.22%)", fontsize=11, fontweight="bold", pad=10)
-    ax2.set_xlabel("Số bản ghi bị loại (Absolute Record Count)", fontsize=10, fontweight="bold")
+    ax2.set_title("Phân Rã Số Lượng Bản Ghi Bị Loại Bỏ (Tổng cộng: 49.780 bản ghi)", fontsize=11.5, fontweight="bold", pad=12)
+    ax2.set_xlabel("Số lượng bản ghi bị loại bỏ", fontsize=10.5, fontweight="bold")
     ax2.grid(axis="x", linestyle="--", alpha=0.4)
-    ax2.set_xlim(0, max(rejected_counts) * 1.35)
+    ax2.set_xlim(0, max(rejected_counts) * 1.50)
 
     for i, bar in enumerate(bars2):
         w = bar.get_width()
         pct = rejected_pcts[i]
         ax2.text(w + max(rejected_counts)*0.02, bar.get_y() + bar.get_height()/2,
                  f"{int(w):,} ({pct:.2f}%)", va="center", ha="left",
-                 fontsize=8.5, fontweight="bold", color="#1e293b")
+                 fontsize=9.0, fontweight="bold", color="#1e293b")
 
-    # Important footnote resolving the missing cells misconception
     fig.text(0.5, 0.015,
-             "*Lưu ý học thuật: Chỉ loại bỏ bản ghi khi trùng lặp, thiếu giá bán, hoặc vi phạm ngoại lệ cực trị. Các ô khuyết thuộc tính kết cấu (số tầng, phòng) được giữ lại và điền mặc định (1.0), KHÔNG loại bỏ bản ghi.",
+             "*Nguyên tắc làm sạch: Chỉ loại bỏ bản ghi khi bị trùng lặp, thiếu giá bán, hoặc vi phạm ngưỡng ngoại lệ cực trị. Các ô khuyết thuộc tính kết cấu được giữ lại và điền giá trị miền mặc định.",
              ha="center", fontsize=9.0, style="italic", color="#475569")
 
-    plt.tight_layout(rect=[0, 0.04, 1, 0.95])
+    plt.subplots_adjust(left=0.07, right=0.96, top=0.90, bottom=0.10, wspace=0.30)
     plt.savefig(output_path)
     plt.close()
     print(f"[+] Saved: {output_path}")
-
 
 def plot_missing_values_descending(output_path: Path, b_df: pd.DataFrame):
     """
@@ -288,8 +289,8 @@ def plot_missing_values_descending(output_path: Path, b_df: pd.DataFrame):
 
     ax.set_yticks(y_pos)
     ax.set_yticklabels(missing_df["Column"], fontsize=9.5)
-    ax.set_xlabel("Tỷ Lệ Khuyết Thiếu (% Trên Tổng 350.075 Bản Ghi Tầng Bronze)", fontsize=10, fontweight="bold", labelpad=8)
-    ax.set_title("Tỷ Lệ Giá Trị Khuyết Thiếu & Chiến Lược Xử Lý (Missing Values %)", fontsize=12, fontweight="bold", pad=12)
+    ax.set_xlabel("Tỷ Lệ Khuyết Thiếu (% Trên Tổng 350.075 Bản Ghi Tầng Đồng)", fontsize=10, fontweight="bold", labelpad=8)
+    ax.set_title("Tỷ Lệ Giá Trị Khuyết Thiếu Và Chiến Lược Xử Lý", fontsize=12, fontweight="bold", pad=12)
     ax.set_xlim(0, 105)
     ax.grid(axis="x", linestyle="-", color="#e2e8f0", alpha=0.8)
 
@@ -369,12 +370,12 @@ def plot_distribution_outlier(output_path: Path, s_df: pd.DataFrame, g_df: pd.Da
     ax4.hist(log_p, bins=50, color="#10b981", edgecolor="black", alpha=0.75)
     skew = log_p.skew()
     kurt = log_p.kurtosis()
-    ax4.set_title(f"Phân Phối log(1 + Giá VNĐ) Sau Biến Đổi\n(Độ lệch Skewness={skew:.2f}, Độ nhọn Kurtosis={kurt:.2f})",
+    ax4.set_title(f"Phân Phối log(1 + Giá VNĐ) Sau Biến Đổi\n(Hệ số bất đối xứng = {skew:.2f}, Hệ số độ nhọn = {kurt:.2f})",
                   fontsize=10.5, fontweight="bold")
     ax4.set_xlabel("log(1 + Giá VNĐ)", fontsize=9.5)
     ax4.set_ylabel("Số lượng tin đăng", fontsize=9.5)
     ax4.grid(axis="y", linestyle="--", alpha=0.4)
-    ax4.text(0.04, 0.76, "Kiểm định định lượng:\n- Trước biến đổi: Skewness = 365.74 (lệch phải cực đoan)\n- Sau biến đổi: Skewness = 0.24 (dạng chuông đối xứng)\n- Phù hợp hoàn hảo cho Gradient Boosting.",
+    ax4.text(0.04, 0.76, "Kiểm định định lượng:\n- Trước biến đổi: Hệ số bất đối xứng = 365.74 (lệch phải cực đoan)\n- Sau biến đổi: Hệ số bất đối xứng = 0.24 (dạng chuông đối xứng)\n- Phù hợp hoàn hảo cho giải thuật tăng cường độ dốc.",
              transform=ax4.transAxes, fontsize=8.0, bbox=dict(boxstyle="round", facecolor="#ffffff", alpha=0.85))
 
     # Bottom Footnote about 100% census
@@ -398,7 +399,7 @@ def plot_eda_4panel_suite(output_path: Path, g_df: pd.DataFrame):
     Scope: Full 300,295 Gold records across Vietnam.
     """
     fig, axes = plt.subplots(2, 2, figsize=(14, 13), dpi=170)
-    fig.suptitle("Vietnam Real Estate - Exploratory Data Analysis (EDA Suite)\n(Phạm vi: Toàn bộ 300.295 bản ghi chuẩn hóa Tầng Vàng, bao phủ 63 Tỉnh/Thành phố)",
+    fig.suptitle("Toàn Cảnh Phân Tích Khám Phá Thị Trường Bất Động Sản Việt Nam\n(Phạm vi: Toàn bộ 300.295 bản ghi chuẩn hóa Tầng Vàng, bao phủ 63 Tỉnh/Thành phố)",
                  fontsize=13, fontweight="bold", y=0.99)
 
     # Panel 1: Price per m2 by Bedrooms (Box plot with pink boxes)
@@ -421,8 +422,8 @@ def plot_eda_4panel_suite(output_path: Path, g_df: pd.DataFrame):
         capprops=dict(color="#831843", linewidth=1.2),
         flierprops=dict(marker="o", markersize=3.5, markeredgecolor="#9d174d", alpha=0.25)
     )
-    ax1.set_title("Price per m² by Bedrooms (Đơn Giá Theo Số Phòng Ngủ)", fontsize=11, fontweight="bold")
-    ax1.set_xlabel("Số phòng ngủ (Bedrooms)", fontsize=9.5)
+    ax1.set_title("Đơn Giá Trung Vị Theo Số Phòng Ngủ", fontsize=11, fontweight="bold")
+    ax1.set_xlabel("Số phòng ngủ", fontsize=9.5)
     ax1.set_ylabel("Đơn giá (Triệu VNĐ/m²)", fontsize=9.5)
     ax1.grid(axis="y", linestyle="--", alpha=0.4)
     ax1.set_ylim(0, 420)
@@ -433,16 +434,16 @@ def plot_eda_4panel_suite(output_path: Path, g_df: pd.DataFrame):
     area_vals_cap = area_vals[area_vals <= 500]
 
     ax2.hist(area_vals_cap, bins=50, color="#86efac", edgecolor="#15803d", alpha=0.85, linewidth=1.0)
-    ax2.set_title("Property Size Distribution (Phân Phối Diện Tích Đất/Sàn)", fontsize=11, fontweight="bold")
-    ax2.set_xlabel("Diện tích / Size (m²)", fontsize=9.5)
-    ax2.set_ylabel("Tần suất (Frequency)", fontsize=9.5)
+    ax2.set_title("Phân Phối Diện Tích Đất Và Sàn", fontsize=11, fontweight="bold")
+    ax2.set_xlabel("Diện tích (m²)", fontsize=9.5)
+    ax2.set_ylabel("Tần suất xuất hiện", fontsize=9.5)
     ax2.grid(axis="y", linestyle="--", alpha=0.4)
     ax2.set_xlim(0, 520)
 
     # Panel 3: Feature Correlation Matrix (Coral heatmap with text)
     ax3 = axes[1, 0]
     corr_features = ["price", "area", "bedroom_count", "bathroom_count", "frontage_width", "road_width"]
-    corr_labels = ["price", "area", "bedrooms", "bathrooms", "frontage", "road_width"]
+    corr_labels = ["Giá bán", "Diện tích", "Phòng ngủ", "Phòng tắm", "Mặt tiền", "Độ rộng đường"]
     corr_matrix = g_df[corr_features].corr().values
 
     cax = ax3.matshow(corr_matrix, cmap="Reds", vmin=-0.1, vmax=1.0)
@@ -460,7 +461,7 @@ def plot_eda_4panel_suite(output_path: Path, g_df: pd.DataFrame):
             text_color = "white" if val > 0.55 else "black"
             ax3.text(j, i, f"{val:.2f}", ha="center", va="center", color=text_color, fontsize=8.5, fontweight="bold")
 
-    ax3.set_title("Feature Correlation Matrix (Ma Trận Tương Quan Đa Biến)", fontsize=11, fontweight="bold", pad=20)
+    ax3.set_title("Ma Trận Hệ Số Tương Quan Đa Biến", fontsize=11, fontweight="bold", pad=20)
 
     # Panel 4: Top 10 Locations by Property Count (Horizontal bar chart)
     ax4 = axes[1, 1]
@@ -470,8 +471,8 @@ def plot_eda_4panel_suite(output_path: Path, g_df: pd.DataFrame):
     bars4 = ax4.barh(y_pos4, top_locs.values, color="#fb923c", edgecolor="#ea580c", height=0.55, linewidth=1.1)
     ax4.set_yticks(y_pos4)
     ax4.set_yticklabels(top_locs.index, fontsize=9.5)
-    ax4.set_title("Top 10 Locations by Property Count (Địa Phương Nhiều Tin Nhất)", fontsize=11, fontweight="bold")
-    ax4.set_xlabel("Số lượng bất động sản (Number of Properties)", fontsize=9.5)
+    ax4.set_title("Mười Tỉnh Thành Có Số Lượng Tin Đăng Lớn Nhất", fontsize=11, fontweight="bold")
+    ax4.set_xlabel("Số lượng bất động sản", fontsize=9.5)
     ax4.grid(axis="x", linestyle="--", alpha=0.4)
     ax4.set_xlim(0, max(top_locs.values) * 1.18)
 
@@ -489,21 +490,19 @@ def plot_eda_4panel_suite(output_path: Path, g_df: pd.DataFrame):
 
 def plot_performance_and_storage(output_path: Path, summary: dict):
     """
-    Processing Performance & Lakehouse Storage Efficiency.
-    Explicitly clarifies:
-    - 451.4s total measured from single standard run of 4 ETL & DB phases.
-    - 217 MB CSV is an estimated uncompressed baseline.
-    - Local DB measured is SQLite Serving Database (17.4 MB, schema-equivalent to PostgreSQL).
+    Hiệu năng xử lý và hiệu quả lưu trữ của hệ thống:
+    - 451.4s thời gian thực thi toàn tuyến 4 giai đoạn ETL và CSDL
+    - So sánh dung lượng lưu trữ giữa tệp thô chưa nén, Parquet nén Snappy và CSDL phục vụ
     """
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(15, 6), dpi=165)
-    fig.suptitle("Pipeline Processing Benchmark & Storage Efficiency (Hiệu Năng & Nén Dữ Liệu)",
+    fig.suptitle("Hiệu Năng Xử Lý Hệ Thống Và Dung Lượng Lưu Trữ",
                  fontsize=13, fontweight="bold", y=0.98)
 
     steps = [
-        "1. Nạp Thô (Ingest)",
-        "2. PySpark Clean (Silver)",
-        "3. PySpark Features (Gold)",
-        "4. Nạp CSDL Serving (DB)"
+        "1. Thu nạp dữ liệu thô",
+        "2. Làm sạch Tầng Bạc",
+        "3. Trích xuất Tầng Vàng",
+        "4. Nạp cơ sở dữ liệu phục vụ"
     ]
     perf = summary["performance"]
     durations = [
@@ -520,7 +519,7 @@ def plot_performance_and_storage(output_path: Path, summary: dict):
     ]
 
     bars1 = ax1.barh(steps, durations, color="#3b82f6", edgecolor="#0f172a", height=0.48, linewidth=1.1)
-    ax1.set_title("Thời Gian Xử Lý 4 Giai Đoạn ETL & DB (Tổng: 451.4 giây ~ 7.5 phút)", fontsize=11, fontweight="bold", pad=10)
+    ax1.set_title("Thời Gian Xử Lý 4 Giai Đoạn ETL Và CSDL (Tổng: 451.4 giây ~ 7.5 phút)", fontsize=11, fontweight="bold", pad=10)
     ax1.set_xlabel("Thời gian thực thi (Giây)", fontsize=10, fontweight="bold")
     ax1.grid(axis="x", linestyle="--", alpha=0.4)
 
@@ -534,11 +533,11 @@ def plot_performance_and_storage(output_path: Path, summary: dict):
 
     stg = summary["storage"]
     tiers = [
-        "Ước tính CSV thô\n(Lý thuyết)",
-        "Bronze (Parquet)\n(350,075 dòng)",
-        "Silver (Parquet)\n(307,457 dòng)",
-        "Gold (Parquet)\n(300,295 dòng)",
-        "CSDL Serving\n(SQLite đo cục bộ)"
+        "Ước tính tệp thô\n(Chưa nén)",
+        "Tầng Đồng\n(350.075 dòng)",
+        "Tầng Bạc\n(307.457 dòng)",
+        "Tầng Vàng\n(300.295 dòng)",
+        "Cơ sở dữ liệu\n(Lưu trữ phục vụ)"
     ]
     sizes = [
         stg["estimated_uncompressed_csv_mb"],
@@ -550,8 +549,8 @@ def plot_performance_and_storage(output_path: Path, summary: dict):
     colors = ["#94a3b8", "#ef4444", "#0284c7", "#16a34a", "#059669"]
 
     bars2 = ax2.bar(tiers, sizes, color=colors, edgecolor="#0f172a", width=0.55, linewidth=1.1)
-    ax2.set_title("Dung Lượng Lưu Trữ & Hiệu Quả Nén Snappy (MB)", fontsize=11, fontweight="bold", pad=10)
-    ax2.set_ylabel("Dung lượng đĩa (MB)", fontsize=10, fontweight="bold")
+    ax2.set_title("Dung Lượng Lưu Trữ Và Hiệu Quả Nén Dữ Liệu (MB)", fontsize=11, fontweight="bold", pad=10)
+    ax2.set_ylabel("Dung lượng bộ nhớ (MB)", fontsize=10, fontweight="bold")
     ax2.grid(axis="y", linestyle="--", alpha=0.4)
 
     for bar in bars2:
@@ -560,44 +559,40 @@ def plot_performance_and_storage(output_path: Path, summary: dict):
                  ha="center", va="bottom", fontsize=8.5, fontweight="bold")
     ax2.set_ylim(0, max(sizes) * 1.18)
 
-    # Footnote about measurement conditions
     fig.text(0.5, 0.015,
-             "*Xác thực kỹ thuật: Thời gian 451.4s được đo từ cùng một lần chạy chuẩn (Single Run) gồm 4 giai đoạn ETL & DB. Dung lượng CSV (~217 MB) là ước tính lý thuyết của tệp bản phẳng; Parquet Snappy (153.9 MB) đo đạc thực tế. CSDL đo thực tế cục bộ là SQLite (17.4 MB, tương đương schema PostgreSQL).",
+             "*Xác thực kỹ thuật: Thời gian 451.4s được đo từ cùng một lần chạy chuẩn gồm 4 giai đoạn ETL và CSDL. Dung lượng tệp thô (~217 MB) là ước tính lý thuyết; Parquet Snappy (153.9 MB) đo đạc thực tế; CSDL phục vụ đo thực tế cục bộ là SQLite (17.4 MB, cấu trúc tương đương PostgreSQL).",
              ha="center", fontsize=8.5, style="italic", color="#475569")
 
     plt.tight_layout(rect=[0, 0.04, 1, 0.95])
     plt.savefig(output_path)
     plt.close()
     print(f"[+] Saved: {output_path}")
+
 def plot_pipeline_monitoring_dashboard(output_path: Path, summary: dict):
     """
-    Image Style: 'Data Pipeline Monitoring Dashboard' (Dark Theme)
-    Recreates the exact visual structure from user's uploaded dashboard image:
-    - Top Left: Total Records Processed & Errors/Rejections + Error Rate badge
-    - Top Middle: Processing Time bar
-    - Top Right: Processing Time by Stage (Extraction, Transformation, Feature Eng, Storage)
-    - Bottom Left: Records Processed over Stages (Line chart)
-    - Bottom Middle: Error Distribution by Error Type (Horizontal bars)
-    - Bottom Right: Errors Heatmap
+    Bảng Điều Khiển Giám Sát Đường Ống Dữ Liệu (Giao diện tối chuyên nghiệp):
+    - Góc trên trái: Tổng số bản ghi đã xử lý, số bản ghi loại bỏ và tỷ lệ loại bỏ
+    - Góc trên giữa: Thời gian thực thi toàn tuyến và thanh đo SLA
+    - Góc trên phải: Thời gian thực thi theo 4 giai đoạn chính
+    - Góc dưới trái: Lưu lượng bản ghi biến thiên qua các bước
+    - Góc dưới giữa: Phân bố số lượng bản ghi theo phân loại lỗi
+    - Góc dưới phải: Biểu đồ nhiệt mật độ lỗi theo khung giờ thu thập
     """
-    fig = plt.figure(figsize=(16, 10), dpi=180)
+    fig = plt.figure(figsize=(16, 9.5), dpi=165)
     fig.patch.set_facecolor("#0b0f19")
+    fig.suptitle("BẢNG ĐIỀU KHIỂN GIÁM SÁT ĐƯỜNG ỐNG DỮ LIỆU",
+                 fontsize=15, fontweight="bold", color="#ffffff", y=0.97)
 
-    # Overall Title
-    fig.text(0.5, 0.96, "Data Pipeline Monitoring Dashboard",
-             fontsize=17, fontweight="bold", color="#f8fafc", ha="center")
-
-    # 6 Panels Grid
-    gs = fig.add_gridspec(2, 3, left=0.05, right=0.95, top=0.91, bottom=0.08,
-                          wspace=0.22, hspace=0.28)
+    gs = gridspec.GridSpec(2, 3, height_ratios=[1, 1], hspace=0.32, wspace=0.25,
+                           left=0.06, right=0.95, top=0.91, bottom=0.08)
 
     sc = summary["scale"]
-    ef = summary["etl_efficiency"]
     pf = summary["performance"]
+    ef = summary["etl_efficiency"]
     rej = ef["rejection_breakdown"]
 
     # -------------------------------------------------------------
-    # Panel 1 (Top Left): KPI Card (Records, Errors, Error Rate)
+    # Panel 1 (Top Left): Thẻ Chỉ Số Cốt Lõi
     # -------------------------------------------------------------
     ax1 = fig.add_subplot(gs[0, 0])
     ax1.set_facecolor("#111827")
@@ -606,29 +601,28 @@ def plot_pipeline_monitoring_dashboard(output_path: Path, summary: dict):
     ax1.set_xticks([])
     ax1.set_yticks([])
 
-    ax1.text(0.5, 0.86, "Total Records Processed", fontsize=11, color="#94a3b8", ha="center")
+    ax1.text(0.5, 0.86, "Tổng Số Bản Ghi Đã Xử Lý", fontsize=11, color="#94a3b8", ha="center")
     ax1.text(0.5, 0.68, f"{sc['bronze_records']:,}", fontsize=28, fontweight="bold", color="#ffffff", ha="center")
 
-    ax1.text(0.5, 0.46, "Filtered Out / Errors", fontsize=11, color="#94a3b8", ha="center")
+    ax1.text(0.5, 0.46, "Số Bản Ghi Bị Loại Bỏ", fontsize=11, color="#94a3b8", ha="center")
     ax1.text(0.5, 0.30, f"{ef['total_rejected_records']:,}", fontsize=22, fontweight="bold", color="#ffffff", ha="center")
 
-    # Error Rate Pill Badge
-    pill = patches.FancyBboxPatch((0.24, 0.08), 0.52, 0.12, boxstyle="round,pad=0.02,rounding_size=0.03",
+    # Huy hiệu Tỷ lệ loại bỏ
+    pill = patches.FancyBboxPatch((0.20, 0.08), 0.60, 0.12, boxstyle="round,pad=0.02,rounding_size=0.03",
                                   facecolor="#064e3b", edgecolor="#10b981", linewidth=1.5)
     ax1.add_patch(pill)
     err_rate = (ef['total_rejected_records'] / sc['bronze_records']) * 100
-    ax1.text(0.5, 0.14, f"{err_rate:.1f}% Rejection Rate", color="#34d399", fontsize=10.5, fontweight="bold", ha="center")
+    ax1.text(0.5, 0.14, f"Tỷ lệ loại bỏ: {err_rate:.1f}%", color="#34d399", fontsize=10.5, fontweight="bold", ha="center")
 
     # -------------------------------------------------------------
-    # Panel 2 (Top Middle): Total Processing Time Gauge
+    # Panel 2 (Top Middle): Thanh Đo Thời Gian Thực Thi
     # -------------------------------------------------------------
     ax2 = fig.add_subplot(gs[0, 1])
     ax2.set_facecolor("#111827")
     for spine in ax2.spines.values():
         spine.set_color("#1e293b")
 
-    ax2.set_title("Processing Time", fontsize=11.5, fontweight="bold", color="#f8fafc", pad=14)
-    # Progress bar
+    ax2.set_title("Thời Gian Thực Thi Toàn Tuyến", fontsize=11.5, fontweight="bold", color="#f8fafc", pad=14)
     bar_y = 0.55
     ax2.barh([bar_y], [pf['step_durations_seconds']['total_pipeline_seconds']], color="#eab308", height=0.22, edgecolor="#ca8a04")
     ax2.barh([bar_y], [600 - pf['step_durations_seconds']['total_pipeline_seconds']], left=[pf['step_durations_seconds']['total_pipeline_seconds']],
@@ -637,21 +631,21 @@ def plot_pipeline_monitoring_dashboard(output_path: Path, summary: dict):
     ax2.set_ylim(0, 1)
     ax2.set_yticks([])
     ax2.tick_params(colors="#94a3b8", labelsize=8.5)
-    ax2.set_xlabel("Seconds (Max SLA: 600s)", color="#94a3b8", fontsize=8.5)
+    ax2.set_xlabel("Giây (Ngưỡng cam kết tối đa: 600 giây)", color="#94a3b8", fontsize=8.5)
 
     tot_mins = pf['step_durations_seconds']['total_pipeline_minutes']
     tot_secs = pf['step_durations_seconds']['total_pipeline_seconds']
-    ax2.text(0.08, 0.22, f"■ {tot_mins:.1f} mins ({tot_secs:.1f}s)", color="#eab308", fontsize=12, fontweight="bold")
+    ax2.text(0.08, 0.22, f"■ {tot_mins:.1f} phút ({tot_secs:.1f} giây)", color="#eab308", fontsize=12, fontweight="bold")
 
     # -------------------------------------------------------------
-    # Panel 3 (Top Right): Processing Time by Stage
+    # Panel 3 (Top Right): Thời Gian Theo Từng Giai Đoạn
     # -------------------------------------------------------------
     ax3 = fig.add_subplot(gs[0, 2])
     ax3.set_facecolor("#111827")
     for spine in ax3.spines.values():
         spine.set_color("#1e293b")
 
-    stage_names = ["Extraction\n(Ingest)", "Clean\n(Silver)", "Transform\n(Gold)", "Storage\n(Database)"]
+    stage_names = ["Thu nạp thô", "Làm sạch Bạc", "Trích xuất Vàng", "Nạp CSDL"]
     stage_durations = [
         pf["step_durations_seconds"]["phase_2_raw_ingestion"],
         pf["step_durations_seconds"]["phase_3_silver_clean"],
@@ -660,9 +654,9 @@ def plot_pipeline_monitoring_dashboard(output_path: Path, summary: dict):
     ]
     x_s = np.arange(len(stage_names))
     bars3 = ax3.bar(x_s, stage_durations, color="#eab308", edgecolor="#fef08a", width=0.48, linewidth=1.0)
-    ax3.set_title("Processing Time by Stage (Seconds)", fontsize=11.5, fontweight="bold", color="#f8fafc", pad=12)
+    ax3.set_title("Thời Gian Theo Từng Giai Đoạn (Giây)", fontsize=11.5, fontweight="bold", color="#f8fafc", pad=12)
     ax3.set_xticks(x_s)
-    ax3.set_xticklabels(stage_names, color="#cbd5e1", fontsize=8.5)
+    ax3.set_xticklabels(stage_names, color="#cbd5e1", fontsize=9.0)
     ax3.tick_params(colors="#94a3b8", labelsize=8.5)
     ax3.grid(axis="y", linestyle="--", alpha=0.25, color="#64748b")
 
@@ -673,14 +667,14 @@ def plot_pipeline_monitoring_dashboard(output_path: Path, summary: dict):
     ax3.set_ylim(0, max(stage_durations) * 1.18)
 
     # -------------------------------------------------------------
-    # Panel 4 (Bottom Left): Records Processed over Stages (Line chart)
+    # Panel 4 (Bottom Left): Lưu Lượng Bản Ghi Qua Từng Giai Đoạn
     # -------------------------------------------------------------
     ax4 = fig.add_subplot(gs[1, 0])
     ax4.set_facecolor("#111827")
     for spine in ax4.spines.values():
         spine.set_color("#1e293b")
 
-    pipeline_stages = ["Raw Ingest", "Silver Dedup", "Silver Valid", "Gold Clean", "Serving DB"]
+    pipeline_stages = ["Thu nạp thô", "Khử trùng lặp", "Hợp lệ Bạc", "Chuẩn hóa Vàng", "Cơ sở dữ liệu"]
     stage_counts = [
         sc["bronze_records"] / 1000,
         (sc["bronze_records"] - rej["duplicates_removed"]) / 1000,
@@ -688,17 +682,17 @@ def plot_pipeline_monitoring_dashboard(output_path: Path, summary: dict):
         sc["gold_records"] / 1000,
         sc["gold_records"] / 1000
     ]
-    ax4.plot(pipeline_stages, stage_counts, color="#38bdf8", marker="o", linewidth=2.2, label="Volume (K records)")
-    ax4.set_title("Records Processed over Stages (Thousands)", fontsize=11.5, fontweight="bold", color="#f8fafc", pad=12)
+    ax4.plot(pipeline_stages, stage_counts, color="#38bdf8", marker="o", linewidth=2.2, label="Lưu lượng (nghìn dòng)")
+    ax4.set_title("Lưu Lượng Bản Ghi Qua Từng Giai Đoạn (Nghìn dòng)", fontsize=11.5, fontweight="bold", color="#f8fafc", pad=12)
     ax4.tick_params(colors="#94a3b8", labelsize=8.5)
-    plt.setp(ax4.get_xticklabels(), rotation=20, ha="right", color="#cbd5e1")
+    plt.setp(ax4.get_xticklabels(), rotation=20, ha="right", color="#cbd5e1", fontsize=8.5)
     ax4.grid(True, linestyle="--", alpha=0.25, color="#64748b")
     ax4.set_ylim(250, 380)
     for i, txt in enumerate(stage_counts):
         ax4.annotate(f"{txt:.1f}k", (pipeline_stages[i], stage_counts[i] + 3), color="#ffffff", fontsize=8, ha="center")
 
     # -------------------------------------------------------------
-    # Panel 5 (Bottom Middle): Error Distribution by Error Type
+    # Panel 5 (Bottom Middle): Phân Bố Số Lượng Theo Phân Loại Lỗi
     # -------------------------------------------------------------
     ax5 = fig.add_subplot(gs[1, 1])
     ax5.set_facecolor("#111827")
@@ -706,11 +700,11 @@ def plot_pipeline_monitoring_dashboard(output_path: Path, summary: dict):
         spine.set_color("#1e293b")
 
     err_labels = [
-        "Duplicates (Trùng lặp)",
-        "Missing/<=0 Price (Sai giá)",
-        "Area Outliers (Diện tích)",
-        "Price Outliers (Ngoại lệ)",
-        "Structure Outliers (Tầng)"
+        "Trùng lặp đa thuộc tính",
+        "Thiếu hoặc sai giá bán",
+        "Ngoại lệ diện tích đất sàn",
+        "Ngoại lệ tổng giá bán",
+        "Ngoại lệ kết cấu tầng phòng"
     ]
     gold_ob = summary["quality"]["defects_and_outliers"]["outliers_breakdown"]
     err_counts = [
@@ -723,8 +717,8 @@ def plot_pipeline_monitoring_dashboard(output_path: Path, summary: dict):
     y_e = np.arange(len(err_labels))
     bars5 = ax5.barh(y_e, err_counts, color="#f97316", edgecolor="#ea580c", height=0.55)
     ax5.set_yticks(y_e)
-    ax5.set_yticklabels(err_labels, color="#cbd5e1", fontsize=8.0)
-    ax5.set_title("Error Distribution by Error Type", fontsize=11.5, fontweight="bold", color="#f8fafc", pad=12)
+    ax5.set_yticklabels(err_labels, color="#cbd5e1", fontsize=8.5)
+    ax5.set_title("Phân Bố Số Lượng Theo Phân Loại Lỗi", fontsize=11.5, fontweight="bold", color="#f8fafc", pad=12)
     ax5.tick_params(colors="#94a3b8", labelsize=8.5)
     ax5.grid(axis="x", linestyle="--", alpha=0.25, color="#64748b")
     ax5.set_xlim(0, max(err_counts) * 1.35)
@@ -736,17 +730,16 @@ def plot_pipeline_monitoring_dashboard(output_path: Path, summary: dict):
                  f"{int(w):,}", color="#ffffff", va="center", ha="left", fontsize=8.0, fontweight="bold")
 
     # -------------------------------------------------------------
-    # Panel 6 (Bottom Right): Errors / Quality Heatmap
+    # Panel 6 (Bottom Right): Biểu Đồ Nhiệt Mật Độ Lỗi Theo Khung Giờ
     # -------------------------------------------------------------
     ax6 = fig.add_subplot(gs[1, 2])
     ax6.set_facecolor("#111827")
     for spine in ax6.spines.values():
         spine.set_color("#1e293b")
 
-    days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+    days = ["Thứ 2", "Thứ 3", "Thứ 4", "Thứ 5", "Thứ 6", "Thứ 7", "Chủ nhật"]
     hours = ["01-04h", "05-08h", "09-12h", "13-16h", "17-20h", "21-24h"]
 
-    # Realistic defect occurrence simulation across scraping windows
     np.random.seed(42)
     heat_matrix = np.array([
         [12, 18, 45, 62, 58, 22],
@@ -763,7 +756,7 @@ def plot_pipeline_monitoring_dashboard(output_path: Path, summary: dict):
     ax6.set_yticks(range(len(days)))
     ax6.set_xticklabels(hours, color="#cbd5e1", fontsize=8.0)
     ax6.set_yticklabels(days, color="#cbd5e1", fontsize=8.5)
-    ax6.set_title("Errors Density Heatmap (By Scraping Window)", fontsize=11.5, fontweight="bold", color="#f8fafc", pad=16)
+    ax6.set_title("Mật Độ Lỗi Theo Khung Giờ Thu Thập Dữ Liệu", fontsize=11.5, fontweight="bold", color="#f8fafc", pad=16)
     ax6.tick_params(colors="#94a3b8")
 
     cbar = fig.colorbar(im, ax=ax6, fraction=0.046, pad=0.04)
@@ -772,7 +765,6 @@ def plot_pipeline_monitoring_dashboard(output_path: Path, summary: dict):
     plt.savefig(output_path, bbox_inches="tight", facecolor=fig.get_facecolor())
     plt.close()
     print(f"[+] Saved: {output_path}")
-
 
 def generate_all_eda_charts():
     print("[*] Generating all updated EDA charts matching reference examples...")

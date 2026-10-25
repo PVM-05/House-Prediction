@@ -2,14 +2,16 @@
 Kịch bản tự động khởi tạo Slide Báo Cáo Bảo Vệ Đồ Án PowerPoint (.pptx)
 Dự án: Hệ Thống Tích Hợp & Phân Tích Dữ Liệu Lớn Bất Động Sản Việt Nam
 Sinh viên thực hiện: Phạm Văn Minh
-Mã sinh viên (MSV): 23010350
+Mã sinh viên: 23010350
 Email: 23010350@st.phenikaa-uni.edu.vn
-Đơn vị: Trường Công nghệ Thông tin - Trường Đại học Phenikaa
+Đơn vị đào tạo: Trường Công nghệ Thông tin - Trường Đại học Phenikaa
+
 Chuẩn thiết kế:
   - Tỷ lệ màn hình rộng Widescreen 16:9 (13.333 in x 7.5 in)
   - Tông màu học thuật Phenikaa: Deep Navy (#0F2942), Cobalt Blue (#1E40AF), Phenikaa Amber (#F58220)
   - Nhúng trực tiếp 8 hình ảnh biểu đồ phân tích độ nét cao
   - Bảng đối chuẩn trước/sau, thông số mô hình và hướng dẫn vận hành
+  - 100% Tiếng Việt chuẩn mực, tuyệt đối không dùng tiếng Anh mở ngoặc cạnh tiếng Việt
 """
 
 import sys
@@ -37,7 +39,6 @@ COLOR_WHITE = RGBColor(255, 255, 255)
 COLOR_GREEN = RGBColor(22, 163, 74)   # #16A34A
 
 def create_slide_header(slide, title_text, category_text="TÍCH HỢP & PHÂN TÍCH DỮ LIỆU LỚN | TRƯỜNG ĐH PHENIKAA"):
-    # Header bar
     header_box = slide.shapes.add_textbox(Inches(0.8), Inches(0.4), Inches(11.7), Inches(0.9))
     tf = header_box.text_frame
     tf.word_wrap = True
@@ -63,7 +64,7 @@ def create_slide_footer(slide, current_slide, total_slides=16):
     tf = footer_box.text_frame
     tf.margin_left = tf.margin_top = tf.margin_right = tf.margin_bottom = 0
     p = tf.paragraphs[0]
-    p.text = f"SV: Phạm Văn Minh (MSV: 23010350) — Trường Công nghệ Thông tin, Đại học Phenikaa                                                     Slide {current_slide} / {total_slides}"
+    p.text = f"Sinh viên: Phạm Văn Minh - Mã sinh viên: 23010350 - Trường Đại học Phenikaa                                                     Slide {current_slide} / {total_slides}"
     p.font.name = "Arial"
     p.font.size = Pt(9)
     p.font.color.rgb = COLOR_TEXT_MUTED
@@ -102,23 +103,20 @@ def generate_presentation():
     blank_layout = prs.slide_layouts[6]
     
     # ==========================================================================
-    # SLIDE 1: TRANG BÌA (TITLE SLIDE)
+    # SLIDE 1: TRANG BÌA
     # ==========================================================================
     slide1 = prs.slides.add_slide(blank_layout)
     
-    # Background card
     bg = slide1.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(0), Inches(0), Inches(13.333), Inches(7.5))
     bg.fill.solid()
     bg.fill.fore_color.rgb = COLOR_NAVY
     bg.line.fill.background()
     
-    # Accent bar
     acc = slide1.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(0.8), Inches(1.2), Inches(0.15), Inches(5.0))
     acc.fill.solid()
     acc.fill.fore_color.rgb = COLOR_ORANGE
     acc.line.fill.background()
     
-    # Content Box
     title_box = slide1.shapes.add_textbox(Inches(1.2), Inches(1.1), Inches(11.3), Inches(5.2))
     tf1 = title_box.text_frame
     tf1.word_wrap = True
@@ -140,7 +138,7 @@ def generate_presentation():
     p2.space_after = Pt(16)
     
     p3 = tf1.add_paragraph()
-    p3.text = "NGHIÊN CỨU XÂY DỰNG HỆ THỐNG LAKEHOUSE ĐA TẦNG (MEDALLION ARCHITECTURE) TÍCH HỢP DỮ LIỆU LỚN VÀ ĐỊNH GIÁ BẤT ĐỘNG SẢN VIỆT NAM BẰNG MÔ HÌNH HỌC MÁY LIGHTGBM"
+    p3.text = "NGHIÊN CỨU XÂY DỰNG HỆ THỐNG HỒ DỮ LIỆU ĐA TẦNG MEDALLION TÍCH HỢP DỮ LIỆU LỚN VÀ ĐỊNH GIÁ BẤT ĐỘNG SẢN VIỆT NAM BẰNG MÔ HÌNH HỌC MÁY LIGHTGBM"
     p3.font.name = "Arial"
     p3.font.size = Pt(23)
     p3.font.bold = True
@@ -148,7 +146,7 @@ def generate_presentation():
     p3.space_after = Pt(28)
     
     p4 = tf1.add_paragraph()
-    p4.text = "Sinh viên thực hiện: PHẠM VĂN MINH       |       Mã sinh viên (MSV): 23010350"
+    p4.text = "Sinh viên thực hiện: PHẠM VĂN MINH       |       Mã sinh viên: 23010350"
     p4.font.name = "Arial"
     p4.font.size = Pt(14)
     p4.font.bold = True
@@ -175,10 +173,9 @@ def generate_presentation():
     create_slide_header(slide2, "1. Tổng Quan Bài Toán & Thách Thức Dữ Liệu Lớn")
     create_slide_footer(slide2, 2)
     
-    # 3 Stat Cards on top
     stat_data = [
-        ("KHO NGUỒN HUGGING FACE", "3,500,744", "bản ghi trên 10 phân mảnh (shards)"),
-        ("PHÂN MẢNH THỰC NGHIỆM", "350,075", "bản ghi thô (Shard 0000 Parquet)"),
+        ("KHO NGUỒN HUGGING FACE", "3,500,744", "bản ghi trên 10 phân mảnh"),
+        ("PHÂN MẢNH THỰC NGHIỆM", "350,075", "bản ghi thô Shard 0000 Parquet"),
         ("TẦNG VÀNG SẠCH SAU ETL", "300,295", "bản ghi phục vụ phân tích & ML (85.8%)")
     ]
     for i, (title, big_val, desc) in enumerate(stat_data):
@@ -206,37 +203,34 @@ def generate_presentation():
         p_d.font.size = Pt(9.5)
         p_d.font.color.rgb = COLOR_TEXT_DARK
         
-    # Main content card
     c_main = add_card(slide2, Inches(0.8), Inches(3.0), Inches(11.7), Inches(3.8))
     tf_m = c_main.text_frame
     tf_m.word_wrap = True
     p_init = tf_m.paragraphs[0]
-    p_init.text = "4 THÁCH THỨC ĐẶC THÙ CỦA DỮ LIỆU BẤT ĐỘNG SẢN VIỆT NAM & GIẢI PHÁP 6V:"
+    p_init.text = "4 THÁCH THỨC ĐẶC THÙ CỦA DỮ LIỆU BẤT ĐỘNG SẢN VIỆT NAM:"
     p_init.font.name = "Arial"
     p_init.font.size = Pt(13.5)
     p_init.font.bold = True
     p_init.font.color.rgb = COLOR_NAVY
     p_init.space_after = Pt(12)
     
-    add_bullet_point(tf_m, "Volume (Quy mô cực lớn)", "3.5 triệu tin đăng vượt quá khả năng xử lý của pandas in-memory; giải quyết bằng kiến trúc xử lý phân tán Apache PySpark.", font_size=12)
-    add_bullet_point(tf_m, "Veracity (Độ tin cậy & Nhiễu loạn)", "Môi giới spam hàng loạt tin trùng lặp; tin rác báo giá ảo 881,020 tỷ đồng, diện tích 24 triệu m²; thiếu chuẩn hóa đơn vị (tỷ, triệu, đ/m², thương lượng).", font_size=12)
-    add_bullet_point(tf_m, "Variety (Dữ liệu phi cấu trúc phức tạp)", "Yếu tố định giá quan trọng (Sổ đỏ, nhà mặt tiền, ngõ ô tô) ẩn giấu trong văn bản miêu tả; giải quyết bằng bộ trích xuất biểu thức chính quy (Regex NLP).", font_size=12)
-    add_bullet_point(tf_m, "Velocity & Lineage (Truy vết nguồn gốc)", "Tin đăng phát sinh liên tục theo thời gian; hệ thống gắn audit metadata (ingested_at, batch_id, source_shard) bảo đảm khả năng tái lập 100%.", font_size=12)
-    add_bullet_point(tf_m, "Value & Valence (Giá trị ứng dụng)", "Xây dựng mô hình AI định giá tự động (LightGBM) và bảng điều khiển Streamlit tương tác 4 phân hệ hỗ trợ ra quyết định đầu tư.", font_size=12)
+    add_bullet_point(tf_m, "Quy mô dữ liệu lớn", "3.5 triệu tin đăng vượt quá khả năng xử lý trên bộ nhớ đơn lẻ; giải quyết bằng kiến trúc xử lý phân tán Apache PySpark.", font_size=12)
+    add_bullet_point(tf_m, "Độ tin cậy và xử lý nhiễu loạn", "Môi giới đăng tải hàng loạt tin trùng lặp; tin rác báo giá ảo 881,020 tỷ đồng, diện tích 24 triệu m²; thiếu chuẩn hóa đơn vị (tỷ, triệu, đ/m², thương lượng).", font_size=12)
+    add_bullet_point(tf_m, "Dữ liệu văn bản phi cấu trúc", "Yếu tố định giá quan trọng như sổ đỏ, nhà mặt tiền, ngõ ô tô ẩn giấu trong văn bản miêu tả; giải quyết bằng bộ trích xuất biểu thức chính quy tự động.", font_size=12)
+    add_bullet_point(tf_m, "Truy vết nguồn gốc và kiểm toán", "Tin đăng phát sinh liên tục theo thời gian; hệ thống gắn siêu dữ liệu kiểm toán gồm thời điểm nạp, mã lô và phân mảnh nguồn.", font_size=12)
+    add_bullet_point(tf_m, "Giá trị ứng dụng thực tiễn", "Xây dựng mô hình định giá tự động LightGBM và bảng điều khiển Streamlit tương tác 4 phân hệ hỗ trợ ra quyết định đầu tư.", font_size=12)
 
     # ==========================================================================
     # SLIDE 3: KIẾN TRÚC HỒ DỮ LIỆU MEDALLION 6 TẦNG
     # ==========================================================================
     slide3 = prs.slides.add_slide(blank_layout)
-    create_slide_header(slide3, "2. Kiến Trúc Hồ Dữ Liệu Medallion Lakehouse 6 Tầng")
+    create_slide_header(slide3, "2. Kiến Trúc Hồ Dữ Liệu Medallion 6 Tầng")
     create_slide_footer(slide3, 3)
     
-    # Left: Image
     img_path = BASE_DIR / "docs/images/00_architecture_flowchart.png"
     if img_path.exists():
         slide3.shapes.add_picture(str(img_path), Inches(0.8), Inches(1.5), Inches(6.8), Inches(5.2))
         
-    # Right: Text card
     c_arch = add_card(slide3, Inches(7.8), Inches(1.5), Inches(4.7), Inches(5.2))
     tf_a = c_arch.text_frame
     tf_a.word_wrap = True
@@ -249,12 +243,12 @@ def generate_presentation():
     p_at.font.color.rgb = COLOR_NAVY
     p_at.space_after = Pt(10)
     
-    add_bullet_point(tf_a, "1. Ingestion", "Nạp bất đồng bộ từ Hugging Face Hub (Polars/Arrow), gán mã lô batch_id & timestamp.", font_size=11, space_after=6)
-    add_bullet_point(tf_a, "2. Bronze Zone", "Lưu trữ nguyên trạng bất biến (Immutable Data) định dạng Parquet Snappy (350,075 dòng, 153.9 MB).", font_size=11, space_after=6)
-    add_bullet_point(tf_a, "3. Silver Zone", "Làm sạch PySpark, khử trùng lặp đa thuộc tính, chuẩn hóa kiểu dữ liệu số (307,457 dòng, 130.0 MB).", font_size=11, space_after=6)
-    add_bullet_point(tf_a, "4. Gold Zone", "Lọc ngoại lệ IQR, trích xuất đặc trưng NLP, log-transform (300,295 dòng, 128.2 MB).", font_size=11, space_after=6)
-    add_bullet_point(tf_a, "5. Serving DB", "PostgreSQL / SQLite Indexing, đánh 4 chỉ mục B-Tree, nạp chunk 10k, dung lượng chỉ 17.4 MB.", font_size=11, space_after=6)
-    add_bullet_point(tf_a, "6. Serving ML/UI", "Mô hình LightGBM định giá trực tuyến & Dashboard Streamlit 4 Tab tương tác.", font_size=11, space_after=6)
+    add_bullet_point(tf_a, "1. Thu nạp thô", "Nạp bất đồng bộ từ Hugging Face qua Polars và Arrow, gắn mã định danh lô và thời điểm nạp.", font_size=11, space_after=6)
+    add_bullet_point(tf_a, "2. Tầng Đồng", "Lưu trữ nguyên trạng bất biến định dạng Parquet Snappy (350,075 dòng, 153.9 MB).", font_size=11, space_after=6)
+    add_bullet_point(tf_a, "3. Tầng Bạc", "Làm sạch bằng PySpark, khử trùng lặp đa thuộc tính, chuẩn hóa kiểu dữ liệu số (307,457 dòng, 130.0 MB).", font_size=11, space_after=6)
+    add_bullet_point(tf_a, "4. Tầng Vàng", "Lọc ngoại lệ, trích xuất đặc trưng văn bản, biến đổi chuẩn hóa logarit (300,295 dòng, 128.2 MB).", font_size=11, space_after=6)
+    add_bullet_point(tf_a, "5. CSDL Phục vụ", "PostgreSQL và SQLite, đánh 4 chỉ mục B-Tree, nạp theo khối 10,000 dòng, dung lượng chỉ 17.4 MB.", font_size=11, space_after=6)
+    add_bullet_point(tf_a, "6. Giao diện & ML", "Mô hình LightGBM định giá trực tuyến và Bảng điều khiển Streamlit 4 Tab tương tác.", font_size=11, space_after=6)
 
     # ==========================================================================
     # SLIDE 4: THUẬT TOÁN KHỬ TRÙNG LẶP & PHỄU LƯU LƯỢNG
@@ -279,11 +273,11 @@ def generate_presentation():
     p_fnt.font.color.rgb = COLOR_NAVY
     p_fnt.space_after = Pt(10)
     
-    add_bullet_point(tf_fn, "Khóa băm tổ hợp đa thuộc tính", "K_dedup = Hash(lower(name) || province || district || ward || price_str || area)", font_size=11, space_after=6)
+    add_bullet_point(tf_fn, "Khóa băm tổ hợp đa thuộc tính", "K_khử_trùng = Băm(chữ_thường(tiêu_đề) || tỉnh || huyện || xã || chuỗi_giá || diện_tích)", font_size=11, space_after=6)
     add_bullet_point(tf_fn, "Khử chính xác 29,686 trùng lặp", "Chiếm 8.48% dữ liệu thô, giải quyết triệt để tình trạng một căn nhà được nhiều môi giới spam.", font_size=11, space_after=6)
     add_bullet_point(tf_fn, "Lọc 12,932 tin thiếu giá / diện tích", "Loại bỏ các tin thỏa thuận, thương lượng, giá âm hoặc diện tích rỗng không thể khôi phục.", font_size=11, space_after=6)
-    add_bullet_point(tf_fn, "Tỷ lệ giữ lại Tầng Bạc (Silver)", "307,457 bản ghi sạch (giữ lại 87.83% so với Tầng Đồng Bronze).", font_size=11, space_after=6)
-    add_bullet_point(tf_fn, "Tỷ lệ toàn trình (Overall)", "Toàn bộ pipeline giữ lại 85.78% dữ liệu chuẩn mực, vượt xa tiêu chí nghiệm thu >= 80%.", font_size=11, space_after=6)
+    add_bullet_point(tf_fn, "Tỷ lệ giữ lại Tầng Bạc", "307,457 bản ghi sạch (đạt 87.83% so với Tầng Đồng ban đầu).", font_size=11, space_after=6)
+    add_bullet_point(tf_fn, "Tỷ lệ toàn trình", "Toàn bộ pipeline giữ lại 85.78% dữ liệu chuẩn mực, vượt xa tiêu chuẩn nghiệm thu 80%.", font_size=11, space_after=6)
 
     # ==========================================================================
     # SLIDE 5: KIỂM TOÁN CHẤT LƯỢNG & GIÁ TRỊ KHUYẾT THIẾU
@@ -308,16 +302,16 @@ def generate_presentation():
     p_mst.font.color.rgb = COLOR_NAVY
     p_mst.space_after = Pt(10)
     
-    add_bullet_point(tf_ms, "Nhóm sạch (< 5% null)", "name (0%), description (0%), province (0%), district (1.75%), price (0%), area (0%). Giữ nguyên vẹn, điền 'Không rõ' cho quận huyện thiếu.", font_size=11, space_after=6)
-    add_bullet_point(tf_ms, "Nhóm khuyết vừa (5% - 50%)", "ward (14.4%), street (40.4%), bedroom (24.8%), direction (46.8%). Điền 'Không rõ' cho phân loại và Median theo quận cho số phòng ngủ.", font_size=11, space_after=6)
-    add_bullet_point(tf_ms, "Nhóm khuyết cao (> 50%)", "project_name (86.1%), frontage_width (64.2%), road_width (61.5%).", font_size=11, space_after=6)
-    add_bullet_point(tf_ms, "Nguyên tắc nghiệp vụ", "TUYỆT ĐỐI KHÔNG XÓA CỘT khuyết cao vì khi có dữ liệu (ví dụ nhà mặt phố), giá trị kinh tế tăng vọt. Áp dụng Imputer chuyên biệt & nhị phân hóa cờ NLP.", font_size=11, space_after=6)
+    add_bullet_point(tf_ms, "Nhóm sạch (< 5% khuyết)", "Tiêu đề (0%), mô tả (0%), tỉnh thành (0%), quận huyện (1.75%), giá bán (0%), diện tích (0%). Giữ nguyên vẹn, điền 'Không rõ' cho quận huyện thiếu.", font_size=11, space_after=6)
+    add_bullet_point(tf_ms, "Nhóm khuyết vừa (5% - 50%)", "Phường xã (14.4%), tên đường (40.4%), số phòng ngủ (24.8%), hướng nhà (46.8%). Điền 'Không rõ' cho phân loại và giá trị trung vị theo quận cho số phòng ngủ.", font_size=11, space_after=6)
+    add_bullet_point(tf_ms, "Nhóm khuyết cao (> 50%)", "Tên dự án (86.1%), mặt tiền (64.2%), độ rộng đường (61.5%).", font_size=11, space_after=6)
+    add_bullet_point(tf_ms, "Nguyên tắc nghiệp vụ", "TUYỆT ĐỐI KHÔNG XÓA CỘT khuyết cao vì khi có dữ liệu (ví dụ nhà mặt phố), giá trị kinh tế tăng vọt. Áp dụng kỹ thuật điền khuyết riêng biệt và nhị phân hóa cờ đặc trưng.", font_size=11, space_after=6)
 
     # ==========================================================================
-    # SLIDE 6: THUẬT TOÁN LỌC NGOẠI LỆ IQR & ĐỐI CHIẾU TRƯỚC / SAU
+    # SLIDE 6: THUẬT TOÁN LỌC NGOẠI LỆ & ĐỐI CHIẾU TRƯỚC / SAU
     # ==========================================================================
     slide6 = prs.slides.add_slide(blank_layout)
-    create_slide_header(slide6, "5. Thuật Toán Lọc Ngoại Lệ Thống Kê (Domain + IQR)")
+    create_slide_header(slide6, "5. Thuật Toán Lọc Ngoại Lệ Thống Kê Kháng Nhiễu")
     create_slide_footer(slide6, 6)
     
     img_dist = BASE_DIR / "docs/images/03_distribution_outlier_analysis.png"
@@ -336,18 +330,18 @@ def generate_presentation():
     p_dst.font.color.rgb = COLOR_NAVY
     p_dst.space_after = Pt(8)
     
-    add_bullet_point(tf_dst, "Loại bỏ 7,162 ngoại lệ (2.33%)", "Kết hợp biên nghiệp vụ [0.1 - 500 tỷ, 10 - 5000 m²] với phân vị IQR trên log-scale.", font_size=10.5, space_after=5)
-    add_bullet_point(tf_dst, "Độ lệch chuẩn Giá (Std)", "Từ 2,006.6 Tỷ GIẢM 77 LẦN còn 25.98 Tỷ VNĐ (Triệt tiêu tin ảo 881,020 tỷ).", font_size=10.5, space_after=5)
-    add_bullet_point(tf_dst, "TRUNG VỊ GIÁ BẢO TOÀN", "7.2 Tỷ (Silver) -> 7.3 Tỷ (Gold). Không làm méo mó bản chất thị trường!", font_size=10.5, space_after=5)
-    add_bullet_point(tf_dst, "Độ lệch chuẩn Diện tích (Std)", "Từ 51,332 m² GIẢM 208 LẦN còn 246.5 m² (Triệt tiêu diện tích ảo 24M m²).", font_size=10.5, space_after=5)
+    add_bullet_point(tf_dst, "Loại bỏ 7,162 ngoại lệ (2.33%)", "Kết hợp biên nghiệp vụ [0.1 - 500 tỷ, 10 - 5000 m²] với phân vị khoảng liên tứ phân vị trên thang logarit.", font_size=10.5, space_after=5)
+    add_bullet_point(tf_dst, "Độ lệch chuẩn Giá bán", "Từ 2,006.6 Tỷ GIẢM 77 LẦN còn 25.98 Tỷ VNĐ (Triệt tiêu tin ảo 881,020 tỷ).", font_size=10.5, space_after=5)
+    add_bullet_point(tf_dst, "TRUNG VỊ GIÁ BẢO TOÀN", "7.2 Tỷ ở Tầng Bạc -> 7.3 Tỷ ở Tầng Vàng. Không làm méo mó bản chất thị trường!", font_size=10.5, space_after=5)
+    add_bullet_point(tf_dst, "Độ lệch chuẩn Diện tích", "Từ 51,332 m² GIẢM 208 LẦN còn 246.5 m² (Triệt tiêu diện tích ảo 24 triệu m²).", font_size=10.5, space_after=5)
     add_bullet_point(tf_dst, "TRUNG VỊ DIỆN TÍCH", "Giữ nguyên vẹn 100% tại 80.0 m².", font_size=10.5, space_after=5)
-    add_bullet_point(tf_dst, "Độ lệch chuẩn Đơn giá/m²", "Từ 48,836 Tr/m² GIẢM 385 LẦN còn 126.8 Tr/m².", font_size=10.5, space_after=5)
+    add_bullet_point(tf_dst, "Độ lệch chuẩn Đơn giá", "Từ 48,836 Tr/m² GIẢM 385 LẦN còn 126.8 Tr/m².", font_size=10.5, space_after=5)
 
     # ==========================================================================
-    # SLIDE 7: PHÂN TÍCH TOÀN CẢNH THỊ TRƯỜNG BẤT ĐỘNG SẢN (EDA)
+    # SLIDE 7: PHÂN TÍCH TOÀN CẢNH THỊ TRƯỜNG BẤT ĐỘNG SẢN
     # ==========================================================================
     slide7 = prs.slides.add_slide(blank_layout)
-    create_slide_header(slide7, "6. Toàn Cảnh Thị Trường Bất Động Sản (Big Data EDA)")
+    create_slide_header(slide7, "6. Toàn Cảnh Thị Trường Bất Động Sản")
     create_slide_footer(slide7, 7)
     
     img_mkt = BASE_DIR / "docs/images/04_market_distribution.png"
@@ -359,7 +353,7 @@ def generate_presentation():
     tf_mkt.word_wrap = True
     
     p_mktt = tf_mkt.paragraphs[0]
-    p_mktt.text = "INSIGHT PHÂN BỐ THỊ TRƯỜNG:"
+    p_mktt.text = "PHÂN TÍCH KHÁM PHÁ THỊ TRƯỜNG:"
     p_mktt.font.name = "Arial"
     p_mktt.font.size = Pt(13)
     p_mktt.font.bold = True
@@ -368,14 +362,14 @@ def generate_presentation():
     
     add_bullet_point(tf_mkt, "Hà Nội dẫn đầu giá trung vị", "8.90 Tỷ VNĐ (104.8k tin), đơn giá trung vị 148.5 Tr/m², giao dịch sôi động nhà ngõ & mặt phố.", font_size=11, space_after=6)
     add_bullet_point(tf_mkt, "TP. Hồ Chí Minh bám sát", "8.50 Tỷ VNĐ (105.7k tin), đơn giá trung vị 135.2 Tr/m², biên độ phân hóa lớn giữa trung tâm và vùng ven.", font_size=11, space_after=6)
-    add_bullet_point(tf_mkt, "Đà Nẵng & Bình Dương", "Đà Nẵng median 7.57 Tỷ (thị trường ven biển); Bình Dương median 2.91 Tỷ (nhà ở công nghiệp/chuyên gia).", font_size=11, space_after=6)
+    add_bullet_point(tf_mkt, "Đà Nẵng & Bình Dương", "Đà Nẵng trung vị 7.57 Tỷ (thị trường ven biển); Bình Dương trung vị 2.91 Tỷ (nhà ở công nghiệp/chuyên gia).", font_size=11, space_after=6)
     add_bullet_point(tf_mkt, "Cơ cấu theo loại hình", "Nhà mặt phố & Biệt thự liền kề có giá trị trung vị cao nhất, tiếp theo là Nhà riêng và Căn hộ chung cư.", font_size=11, space_after=6)
 
     # ==========================================================================
     # SLIDE 8: NLP TRÍCH XUẤT ĐẶC TRƯNG & BIẾN ĐỔI LOGARIT
     # ==========================================================================
     slide8 = prs.slides.add_slide(blank_layout)
-    create_slide_header(slide8, "7. Kỹ Thuật Đặc Trưng Văn Bản NLP & Chuẩn Hóa Logarit")
+    create_slide_header(slide8, "7. Kỹ Thuật Đặc Trưng Văn Bản & Chuẩn Hóa Logarit")
     create_slide_footer(slide8, 8)
     
     img_eda_p = BASE_DIR / "docs/images/eda_price_distribution.png"
@@ -387,30 +381,29 @@ def generate_presentation():
     tf_nlp.word_wrap = True
     
     p_nlpt = tf_nlp.paragraphs[0]
-    p_nlpt.text = "TRÍCH XUẤT NLP & LOG-SCALE:"
+    p_nlpt.text = "TRÍCH XUẤT ĐẶC TRƯNG & CHUẨN HÓA:"
     p_nlpt.font.name = "Arial"
     p_nlpt.font.size = Pt(13)
     p_nlpt.font.bold = True
     p_nlpt.font.color.rgb = COLOR_NAVY
     p_nlpt.space_after = Pt(10)
     
-    add_bullet_point(tf_nlp, "Cờ pháp lý (has_so_do)", "Nhận diện từ khóa 'sổ đỏ', 'sổ hồng', 'chính chủ', 'pháp lý chuẩn'. Đẩy thanh khoản và giá nhà tăng rõ rệt.", font_size=11, space_after=6)
-    add_bullet_point(tf_nlp, "Cờ vị trí (is_frontage, is_alley)", "Nhận diện 'mặt phố', 'kinh doanh' vs 'ngõ hẻm', 'ba gác'. Mặt phố có đơn giá gấp 2-3 lần nhà ngõ.", font_size=11, space_after=6)
-    add_bullet_point(tf_nlp, "Cờ tiện nghi (has_furniture, has_car_access)", "Nhận diện 'full nội thất', 'ô tô đỗ cửa', 'gara ô tô'.", font_size=11, space_after=6)
-    add_bullet_point(tf_nlp, "Biến đổi log1p(price) & log1p(area)", "Kéo độ lệch Skewness từ 6.70 xuống 0.24 (gần chuẩn Gauss), giúp hàm mất mát MSE hội tụ tối ưu.", font_size=11, space_after=6)
+    add_bullet_point(tf_nlp, "Cờ pháp lý sổ đỏ/hồng", "Nhận diện từ khóa 'sổ đỏ', 'sổ hồng', 'chính chủ', 'pháp lý chuẩn'. Đẩy thanh khoản và giá nhà tăng rõ rệt.", font_size=11, space_after=6)
+    add_bullet_point(tf_nlp, "Cờ vị trí mặt phố và ngõ hẻm", "Nhận diện 'mặt phố', 'kinh doanh' so với 'ngõ hẻm', 'ba gác'. Mặt phố có đơn giá gấp 2-3 lần nhà ngõ.", font_size=11, space_after=6)
+    add_bullet_point(tf_nlp, "Cờ tiện nghi nội thất và ô tô", "Nhận diện 'full nội thất', 'ô tô đỗ cửa', 'gara ô tô'.", font_size=11, space_after=6)
+    add_bullet_point(tf_nlp, "Biến đổi logarit tự nhiên", "Kéo hệ số bất đối xứng từ 6.70 xuống 0.24 (gần chuẩn đối xứng), giúp hàm mục tiêu hội tụ tối ưu.", font_size=11, space_after=6)
 
     # ==========================================================================
     # SLIDE 9: GIAO THỨC CHIA 3 TẬP CHỐNG RÒ RỈ DỮ LIỆU
     # ==========================================================================
     slide9 = prs.slides.add_slide(blank_layout)
-    create_slide_header(slide9, "8. Giao Thức Phân Chia 3 Chiều Chống Rò Rỉ Dữ Liệu")
+    create_slide_header(slide9, "8. Giao Thức Phân Chia Ba Tập Dữ Liệu Chống Rò Rỉ")
     create_slide_footer(slide9, 9)
     
-    # 3 Cards for 3 splits
     splits_info = [
-        ("TẬP HUẤN LUYỆN (TRAIN SET)", "70%", "210,206 mẫu", "Toàn bộ Target Encoding, Imputer, Scaler CHỈ ĐƯỢC FIT trên tập dữ liệu này. Tuyệt đối không nhìn trước dữ liệu tương lai."),
-        ("TẬP KIỂM ĐỊNH (VALIDATION SET)", "15%", "45,044 mẫu", "Sử dụng độc quyền để điều chỉnh siêu tham số (Hyperparameter Tuning) và cơ chế Early Stopping chống Overfitting."),
-        ("TẬP KIỂM THỬ ĐỘC LẬP (TEST SET)", "15%", "45,045 mẫu", "Được giữ bí mật tuyệt đối trong quá trình huấn luyện; CHỈ ĐƯỢC CHẤM ĐIỂM ĐÚNG 1 LẦN DUY NHẤT để đánh giá năng lực tổng quát hóa.")
+        ("TẬP HUẤN LUYỆN", "70%", "210,206 mẫu", "Toàn bộ tiền xử lý phân loại, điền khuyết, chuẩn hóa CHỈ ĐƯỢC HỌC trên tập dữ liệu này. Tuyệt đối không nhìn trước dữ liệu kiểm thử."),
+        ("TẬP KIỂM ĐỊNH", "15%", "45,044 mẫu", "Sử dụng độc quyền để điều chỉnh siêu tham số và kích hoạt cơ chế dừng sớm chống quá khớp."),
+        ("TẬP KIỂM THỬ ĐỘC LẬP", "15%", "45,045 mẫu", "Được giữ bí mật tuyệt đối trong quá trình huấn luyện; CHỈ ĐƯỢC CHẤM ĐIỂM ĐÚNG 1 LẦN DUY NHẤT để đánh giá năng lực tổng quát hóa.")
     ]
     for i, (title, pct, count, desc) in enumerate(splits_info):
         c_left = Inches(0.8 + i * 4.0)
@@ -451,10 +444,9 @@ def generate_presentation():
     # SLIDE 10: SO SÁNH THUẬT TOÁN: RIDGE VS LIGHTGBM
     # ==========================================================================
     slide10 = prs.slides.add_slide(blank_layout)
-    create_slide_header(slide10, "9. Thuật Toán Học Máy: Ridge Baseline vs LightGBM")
+    create_slide_header(slide10, "9. Thuật Toán Học Máy: Hồi Quy Ridge Cơ Sở vs LightGBM")
     create_slide_footer(slide10, 10)
     
-    # Table comparison
     rows = 7
     cols = 4
     left = Inches(0.8)
@@ -469,14 +461,14 @@ def generate_presentation():
     tbl.columns[2].width = Inches(2.6)
     tbl.columns[3].width = Inches(3.3)
     
-    headers = ["Chỉ Số Đánh Giá (Metric)", "Ridge Baseline", "LightGBM Regressor", "Mức Độ Cải Thiện Vượt Trội"]
+    headers = ["Chỉ Số Đánh Giá", "Hồi Quy Ridge Cơ Sở", "Mô Hình LightGBM", "Mức Độ Cải Thiện Vượt Trội"]
     data = [
-        ["Hệ số xác định R² (log-scale)", "0.6266 (62.7%)", "0.8537 (85.4%)", "TĂNG +36.2% (Giải thích 85.4% phương sai)"],
-        ["Sai số căn quân phương RMSE (log)", "0.6556", "0.4104", "GIẢM -37.4% sai số toàn phương"],
-        ["Sai số tuyệt đối trung bình MAE (log)", "0.4918", "0.2907", "GIẢM -40.9% sai số tuyệt đối"],
+        ["Hệ số xác định R² trên thang logarit", "0.6266 (62.7%)", "0.8537 (85.4%)", "TĂNG +36.2% (Giải thích 85.4% phương sai)"],
+        ["Sai số căn quân phương RMSE trên thang logarit", "0.6556", "0.4104", "GIẢM -37.4% sai số toàn phương"],
+        ["Sai số tuyệt đối trung bình MAE trên thang logarit", "0.4918", "0.2907", "GIẢM -40.9% sai số tuyệt đối"],
         ["MAE trên thang tiền tệ thực tế", "10.18 Tỷ VNĐ", "4.64 Tỷ VNĐ", "GIẢM -54.4% (Sai số giảm hơn một nửa!)"],
-        ["Sai số tuyệt đối trung vị (MedAE)", "2.62 Tỷ VNĐ", "1.36 Tỷ VNĐ", "GIẢM -48.2% (50% nhà lệch dưới 1.36 tỷ)"],
-        ["Sai số tỷ lệ trung vị (MdAPE)", "37.28%", "20.47%", "CẢI THIỆN -45.1% (Sai số thực tế chỉ ~20%)"]
+        ["Sai số tuyệt đối trung vị MedAE", "2.62 Tỷ VNĐ", "1.36 Tỷ VNĐ", "GIẢM -48.2% (50% nhà lệch dưới 1.36 tỷ)"],
+        ["Sai số phần trăm tuyệt đối trung vị MdAPE", "37.28%", "20.47%", "CẢI THIỆN -45.1% (Sai số thực tế chỉ ~20%)"]
     ]
     
     for c_idx, h_text in enumerate(headers):
@@ -550,39 +542,38 @@ def generate_presentation():
     
     add_bullet_point(tf_prf, "Tổng thời gian pipeline", "451.4 giây (~7.52 phút) cho 350,075 dòng thô.", font_size=11, space_after=6)
     add_bullet_point(tf_prf, "Thông lượng xử lý PySpark", "Ingestion: 10,002 dòng/s | Silver: 6,956 dòng/s | Gold: 4,010 dòng/s | Loading: 1,038 dòng/s.", font_size=11, space_after=6)
-    add_bullet_point(tf_prf, "Nén Parquet Snappy", "Giảm từ 217 MB (CSV thô) xuống 153.9 MB (Bronze) và 128.2 MB (Gold) - Tiết kiệm 29.1% dung lượng.", font_size=11, space_after=6)
+    add_bullet_point(tf_prf, "Nén Parquet Snappy", "Giảm từ 217 MB tệp thô chưa nén xuống 153.9 MB Tầng Đồng và 128.2 MB Tầng Vàng - Tiết kiệm 29.1% dung lượng.", font_size=11, space_after=6)
     add_bullet_point(tf_prf, "CSDL Phục Vụ SQLite", "Tối ưu hóa chỉ còn 17.4 MB, tích hợp 4 chỉ mục B-Tree, tốc độ truy vấn phục vụ Web dưới 50ms.", font_size=11, space_after=6)
 
     # ==========================================================================
-    # SLIDE 13: KIỂM THỬ TỰ ĐỘNG & HƯỚNG DẪN CHẠY 1-CLICK
+    # SLIDE 13: KIỂM THỬ TỰ ĐỘNG & HƯỚNG DẪN CHẠY DỄ DÀNG
     # ==========================================================================
     slide13 = prs.slides.add_slide(blank_layout)
-    create_slide_header(slide13, "12. Tự Động Hóa Kiểm Thử & Hướng Dẫn Vận Hành 1-Click")
+    create_slide_header(slide13, "12. Tự Động Hóa Kiểm Thử & Hướng Dẫn Vận Hành Dễ Dàng")
     create_slide_footer(slide13, 13)
     
-    # Left Card: Tests
     c_tst = add_card(slide13, Inches(0.8), Inches(1.5), Inches(5.6), Inches(5.2))
     tf_tst = c_tst.text_frame
     tf_tst.word_wrap = True
     p_tt = tf_tst.paragraphs[0]
-    p_tt.text = "BỘ KIỂM THỬ TỰ ĐỘNG (10/10 TESTS PASS):"
+    p_tt.text = "BỘ KIỂM THỬ TỰ ĐỘNG (10/10 BÀI KIỂM THỬ ĐẠT YÊU CẦU):"
     p_tt.font.name = "Arial"
-    p_tt.font.size = Pt(12.5)
+    p_tt.font.size = Pt(12)
     p_tt.font.bold = True
     p_tt.font.color.rgb = COLOR_GREEN
     p_tt.space_after = Pt(10)
     
     tests = [
-        "1. test_directories_exist (Cấu trúc thư mục chuẩn)",
-        "2. test_bronze_parquet (350,075 dòng, 3 cột Lineage)",
-        "3. test_silver_parquet (307,457 dòng, sạch null/âm)",
-        "4. test_gold_parquet (300,295 dòng, cờ NLP & log)",
-        "5. test_data_quality_report (Kiểm toán JSON & phễu)",
-        "6. test_storage_database (Khớp 100%, 4 B-Tree Index)",
-        "7. test_three_way_split_protocol (70/15/15, R² >= 0.80)",
-        "8. test_train_serving_consistency (Đồng nhất pipeline)",
-        "9. test_evaluation_diagnostics (Biểu đồ chẩn đoán)",
-        "10. test_pipeline_summary_metrics (7 mục & 7 biểu đồ)"
+        "1. test_directories_exist (Kiểm tra cấu trúc thư mục chuẩn)",
+        "2. test_bronze_parquet (350,075 dòng, 3 cột kiểm toán)",
+        "3. test_silver_parquet (307,457 dòng, sạch null và âm)",
+        "4. test_gold_parquet (300,295 dòng, cờ đặc trưng và log)",
+        "5. test_data_quality_report (Kiểm toán báo cáo chất lượng)",
+        "6. test_storage_database (Khớp 100%, 4 chỉ mục B-Tree)",
+        "7. test_three_way_split_protocol (Tỷ lệ 70/15/15, R² >= 0.80)",
+        "8. test_train_serving_consistency (Đồng nhất quy trình)",
+        "9. test_evaluation_diagnostics (Biểu đồ chẩn đoán mô hình)",
+        "10. test_pipeline_summary_metrics (7 mục số liệu và 7 biểu đồ)"
     ]
     for t in tests:
         p = tf_tst.add_paragraph()
@@ -592,7 +583,6 @@ def generate_presentation():
         p.font.color.rgb = COLOR_TEXT_DARK
         p.space_after = Pt(4)
         
-    # Right Card: 1-click execution
     c_exe = add_card(slide13, Inches(6.8), Inches(1.5), Inches(5.7), Inches(5.2))
     tf_exe = c_exe.text_frame
     tf_exe.word_wrap = True
@@ -617,10 +607,10 @@ def generate_presentation():
     create_slide_footer(slide14, 14)
     
     tabs = [
-        ("TAB 1: KIẾN TRÚC LAKEHOUSE", "Trực quan hóa sơ đồ 6 tầng, quy mô 3.5M dòng trên 10 shards, lưu lượng và các thuộc tính qua từng tầng."),
-        ("TAB 2: CHẤT LƯỢNG & BIẾN ĐỔI", "Biểu đồ phễu lưu lượng 2 panel, tỷ lệ khuyết thiếu phân 3 nhóm màu, bảng 5 số thống kê TRƯỚC vs SAU lọc ngoại lệ."),
-        ("TAB 3: PHÂN TÍCH THỊ TRƯỜNG (EDA)", "Bản đồ giá trung vị theo tỉnh thành, phân tích loại hình bất động sản, đơn giá theo phòng ngủ và ma trận tương quan."),
-        ("TAB 4: HIỆU NĂNG & ĐỊNH GIÁ AI", "Dashboard giám sát pipeline, hiệu quả nén Parquet Snappy, biểu mẫu định giá nhà tự động bằng LightGBM theo thời gian thực.")
+        ("TAB 1: KIẾN TRÚC HỒ DỮ LIỆU", "Trực quan hóa sơ đồ 6 tầng, quy mô 3.5 triệu dòng trên 10 phân mảnh, lưu lượng và các thuộc tính qua từng tầng."),
+        ("TAB 2: CHẤT LƯỢNG & BIẾN ĐỔI", "Biểu đồ phễu lưu lượng 2 panel, tỷ lệ khuyết thiếu phân 3 nhóm màu, bảng 5 số thống kê TRƯỚC và SAU khi lọc ngoại lệ."),
+        ("TAB 3: PHÂN TÍCH THỊ TRƯỜNG", "Bản đồ giá trung vị theo tỉnh thành, phân tích loại hình bất động sản, đơn giá theo phòng ngủ và ma trận tương quan."),
+        ("TAB 4: HIỆU NĂNG & ĐỊNH GIÁ", "Bảng điều khiển giám sát quy trình, hiệu quả nén Parquet Snappy, biểu mẫu định giá nhà tự động bằng LightGBM theo thời gian thực.")
     ]
     for i, (tab_title, tab_desc) in enumerate(tabs):
         r_i = i // 2
@@ -663,10 +653,10 @@ def generate_presentation():
     p_ct.font.color.rgb = COLOR_GREEN
     p_ct.space_after = Pt(10)
     
-    add_bullet_point(tf_c, "Hoàn thiện pipeline 6 tầng", "Tuân thủ chuẩn mực Medallion Lakehouse, xử lý phân tán PySpark.", font_size=11, space_after=6)
+    add_bullet_point(tf_c, "Hoàn thiện quy trình 6 tầng", "Tuân thủ chuẩn mực Hồ dữ liệu Medallion, xử lý phân tán PySpark.", font_size=11, space_after=6)
     add_bullet_point(tf_c, "Kiểm soát chất lượng khoa học", "Khử 29.7k trùng lặp, lọc 7.1k ngoại lệ, giảm phương sai giá 77 lần mà bảo toàn trung vị.", font_size=11, space_after=6)
-    add_bullet_point(tf_c, "Mô hình LightGBM tối ưu", "R² = 0.8537, MdAPE = 20.47%, vượt trội hoàn toàn baseline Ridge.", font_size=11, space_after=6)
-    add_bullet_point(tf_c, "Độ tin cậy & tự động hóa cao", "10/10 ca Pytest passed, đóng gói batch 1-click Windows và Streamlit App.", font_size=11, space_after=6)
+    add_bullet_point(tf_c, "Mô hình LightGBM tối ưu", "R² = 0.8537, MdAPE = 20.47%, vượt trội hoàn toàn so với mô hình cơ sở Ridge.", font_size=11, space_after=6)
+    add_bullet_point(tf_c, "Độ tin cậy & tự động hóa cao", "10/10 ca kiểm thử đạt yêu cầu, đóng gói kịch bản tự động trên Windows và ứng dụng Web Streamlit.", font_size=11, space_after=6)
     
     c_lim = add_card(slide15, Inches(6.8), Inches(1.5), Inches(5.7), Inches(5.2))
     tf_l = c_lim.text_frame
@@ -679,10 +669,10 @@ def generate_presentation():
     p_lt.font.color.rgb = COLOR_ORANGE
     p_lt.space_after = Pt(10)
     
-    add_bullet_point(tf_l, "Giới hạn 1 - Phân mảnh thực nghiệm", "Thực nghiệm trên 1 shard (350k dòng) do giới hạn máy trạm cá nhân; mở rộng 3.5M dòng cần cụm Spark Cluster.", font_size=11, space_after=6)
-    add_bullet_point(tf_l, "Giới hạn 2 - Bản chất giá rao bán", "Asking price phản ánh kỳ vọng người bán, thường cao hơn 5-15% so với giá giao dịch thực tế tại phòng công chứng.", font_size=11, space_after=6)
+    add_bullet_point(tf_l, "Giới hạn 1 - Phân mảnh thực nghiệm", "Thực nghiệm trên 1 phân mảnh (350k dòng) do giới hạn máy trạm cá nhân; mở rộng 3.5 triệu dòng cần cụm máy chủ Spark phân tán.", font_size=11, space_after=6)
+    add_bullet_point(tf_l, "Giới hạn 2 - Bản chất giá rao bán", "Giá rao bán phản ánh kỳ vọng người bán, thường cao hơn 5-15% so với giá giao dịch thực tế tại phòng công chứng.", font_size=11, space_after=6)
     add_bullet_point(tf_l, "Giới hạn 3 - Tọa độ không gian", "Dữ liệu thiếu tọa độ GPS chính xác từng số nhà để tính khoảng cách đến trường học/bệnh viện.", font_size=11, space_after=6)
-    add_bullet_point(tf_l, "Lộ trình tương lai", "Mở rộng cụm phân tán Spark trên Cloud, tích hợp Geocoding API và mô hình đồ thị tri thức GNN.", font_size=11, space_after=6)
+    add_bullet_point(tf_l, "Lộ trình tương lai", "Mở rộng cụm phân tán Spark trên Cloud, tích hợp dịch vụ Geocoding API và mô hình đồ thị tri thức GNN.", font_size=11, space_after=6)
 
     # ==========================================================================
     # SLIDE 16: TRANG KẾT THÚC / Q&A
@@ -707,7 +697,7 @@ def generate_presentation():
     pq1.space_after = Pt(24)
     
     pq2 = tf16.add_paragraph()
-    pq2.text = "KÍNH MỜI QUÝ THẦY CÔ ĐẶT CÂU HỎI & ĐÓNG GÓP Ý KIẾN (Q & A)"
+    pq2.text = "KÍNH MỜI QUÝ THẦY CÔ ĐẶT CÂU HỎI VÀ ĐÓNG GÓP Ý KIẾN"
     pq2.font.name = "Arial"
     pq2.font.size = Pt(18)
     pq2.font.bold = True
@@ -716,7 +706,7 @@ def generate_presentation():
     pq2.space_after = Pt(36)
     
     pq3 = tf16.add_paragraph()
-    pq3.text = "Sinh viên thực hiện: Phạm Văn Minh  —  MSV: 23010350"
+    pq3.text = "Sinh viên thực hiện: Phạm Văn Minh  —  Mã sinh viên: 23010350"
     pq3.font.name = "Arial"
     pq3.font.size = Pt(14)
     pq3.font.bold = True

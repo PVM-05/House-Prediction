@@ -9,7 +9,7 @@
 **Thời gian thực hiện:** Sprint 2 Tuần (Năm 2026)  
 **Nguồn dữ liệu gốc:** `tinixai/vietnam-real-estates` trên Hugging Face Hub (3.500.744 bản ghi trên 10 phân mảnh Parquet)  
 **Quy mô thực nghiệm kiểm chứng:** Phân mảnh Shard 0 (`shard_0000.parquet` - **350.075 bản ghi thô** $\rightarrow$ **307.457 bản ghi Bạc** $\rightarrow$ **300.295 bản ghi Vàng**)  
-**Công nghệ chủ đạo:** Apache PySpark 3.5, Apache Parquet Snappy, PostgreSQL 15 (SQLite fallback), LightGBM, Streamlit  
+**Công nghệ chủ đạo:** Apache PySpark 3.5, Apache Parquet Snappy, PostgreSQL 15 SQLite dự phòng cục bộ, LightGBM, Streamlit  
 
 ---
 
@@ -26,21 +26,21 @@ Thị trường bất động sản Việt Nam là một trong những kênh đ�
 2. **Nhiễu loạn dữ liệu và tin rác:** Tỷ lệ tin đăng lặp lại cao do môi giới spam bài; nhiều tin đăng nhập giá "thỏa thuận", giá 0 đồng hoặc nhập nhầm giá thuê thành giá bán.
 3. **Giá trị cốt lõi ẩn trong văn bản tự do:** Các yếu tố then chốt quyết định giá trị pháp lý và thanh khoản (như *Sổ đỏ/Sổ hồng*, *Ngõ ô tô vào được*, *Nhà mặt tiền kinh doanh*) thường nằm rải rác trong văn bản miêu tả phi cấu trúc thay vì lưu ở dạng trường dữ liệu chuẩn.
 
-**Mục tiêu của đề tài:** Xây dựng một đường ống (pipeline) tích hợp dữ liệu lớn từ đầu nguồn đến ứng dụng cuối theo kiến trúc chuẩn công nghiệp (Medallion Lakehouse), xử lý phân tán dữ liệu tin đăng nhà đất bằng **Apache PySpark**, kiểm soát chất lượng dữ liệu nghiêm ngặt, trực quan hóa phân tích thị trường và tích hợp mô hình học máy định giá hỗ trợ ra quyết định.
+**Mục tiêu của đề tài:** Xây dựng một đường ống đường ống dữ liệu tích hợp dữ liệu lớn từ đầu nguồn đến ứng dụng cuối theo kiến trúc chuẩn công nghiệp Hồ dữ liệu Medallion, xử lý phân tán dữ liệu tin đăng nhà đất bằng **Apache PySpark**, kiểm soát chất lượng dữ liệu nghiêm ngặt, trực quan hóa phân tích thị trường và tích hợp mô hình học máy định giá hỗ trợ ra quyết định.
 
-### 1.2. Tiêu Chí Nghiệm Thu Hệ Thống (System Acceptance Criteria)
+### 1.2. Tiêu Chí Nghiệm Thu Hệ Thống 
 Hệ thống được thiết kế và kiểm thử nhằm thỏa mãn 5 tiêu chí nghiệm thu định lượng:
 - **Tiêu chí 1 (Thu nạp & Truy vết):** Tự động thu nạp phân mảnh dữ liệu từ Hugging Face Hub, lưu đệm nguyên trạng dạng Parquet và gắn đầy đủ siêu dữ liệu kiểm toán (`batch_id`, `ingested_at`, `source_shard`).
 - **Tiêu chí 2 (Chất lượng & Khử nhiễu):** Khử trùng lặp đa khóa, xử lý triệt để 100% bản ghi thiếu hoặc âm giá, lọc ngoại lệ cực trị theo 4 tầng điều kiện miền nghiệp vụ, bảo đảm tỷ lệ giữ lại dữ liệu toàn trình $\ge 80\%$.
-- **Tiêu chí 3 (Lưu trữ Serving & Toàn vẹn):** Nạp dữ liệu Tầng Vàng vào cơ sở dữ liệu quan hệ có hỗ trợ giao dịch nguyên tử (ACID Transaction Rollback), đánh chỉ mục B-Tree và đạt tỷ lệ đối chiếu bản ghi khớp tuyệt đối 100%.
-- **Tiêu chí 4 (Phân tích & Học máy):** Cung cấp bộ trực quan hóa dữ liệu thị trường (EDA) chuyên sâu; xây dựng mô hình học máy định giá dự đoán trên thang logarit với giao thức chia tập 3 chiều (Train 70% / Val 15% / Test 15%) loại bỏ hoàn toàn rò rỉ dữ liệu (Zero Data Leakage), đạt hệ số $R^2 \ge 0.80$ và sai số phần trăm trung vị $\text{MdAPE} \le 25\%$.
+- **Tiêu chí 3 (Lưu trữ Serving & Toàn vẹn):** Nạp dữ liệu Tầng Vàng vào cơ sở dữ liệu quan hệ có hỗ trợ giao dịch nguyên tử giao dịch nguyên tử có cơ chế hoàn tác, đánh chỉ mục B-Tree và đạt tỷ lệ đối chiếu bản ghi khớp tuyệt đối 100%.
+- **Tiêu chí 4 (Phân tích & Học máy):** Cung cấp bộ trực quan hóa dữ liệu thị trường (EDA) chuyên sâu; xây dựng mô hình học máy định giá dự đoán trên thang logarit với giao thức chia tập 3 chiều (Train 70% / Val 15% / Test 15%) loại bỏ hoàn toàn rò rỉ dữ liệu tuyệt đối không rò rỉ dữ liệu, đạt hệ số $R^2 \ge 0.80$ và sai số phần trăm trung vị $\text{MdAPE} \le 25\%$.
 - **Tiêu chí 5 (Tự động hóa & Kiểm thử):** Vận hành toàn bộ quy trình chỉ bằng 1 lệnh duy nhất (`python run_pipeline.py all` hoặc `make all`) và vượt qua 10/10 bài kiểm thử tự động (`pytest -v`).
 
 ### 1.3. Nguồn Dữ Liệu & Phân Định Quy Mô Thực Nghiệm
 Dự án sử dụng bộ dữ liệu **`tinixai/vietnam-real-estates`** từ Hugging Face Hub, thu thập các tin đăng bất động sản trên phạm vi toàn quốc trong giai đoạn tháng 6 – 7/2025. Để đảm bảo tính minh bạch học thuật, báo cáo phân định rõ 3 cấp độ quy mô:
-- **Toàn bộ kho dữ liệu nguồn (Full Repository):** Bao gồm **3.500.744 bản ghi** chia thành 10 phân mảnh Parquet (`shard_0000.parquet` đến `shard_0009.parquet`) với tổng dung lượng nén ~1.5 GB.
-- **Phân mảnh nạp pipeline thực tế (Verified Production Shard):** Phân mảnh `shard_0000.parquet` bao gồm **350.075 bản ghi thô** (chiếm 10.0% toàn kho dữ liệu, dung lượng 153.89 MB). Đây là phân mảnh được đưa vào vận hành thực tế qua toàn bộ 6 tầng kiến trúc, làm sạch thành 307.457 bản ghi Bạc và 300.295 bản ghi Vàng.
-- **Mẫu khảo sát thăm dò ban đầu (Initial Exploration Sample):** Mẫu cắt lát **50.000 bản ghi** được thực hiện trong Ngày 1 (được trình bày tại `docs/data_profile.md`) nhằm khảo sát nhanh cấu trúc schema, kiểu dữ liệu và tỷ lệ khuyết thiếu sơ bộ trước khi viết mã nguồn ETL.
+- **Toàn bộ kho dữ liệu nguồn Toàn bộ kho dữ liệu:** Bao gồm **3.500.744 bản ghi** chia thành 10 phân mảnh Parquet (`shard_0000.parquet` đến `shard_0009.parquet`) với tổng dung lượng nén ~1.5 GB.
+- **Phân mảnh nạp pipeline thực tế Phân mảnh nạp pipeline thực tế:** Phân mảnh `shard_0000.parquet` bao gồm **350.075 bản ghi thô** (chiếm 10.0% toàn kho dữ liệu, dung lượng 153.89 MB). Đây là phân mảnh được đưa vào vận hành thực tế qua toàn bộ 6 tầng kiến trúc, làm sạch thành 307.457 bản ghi Bạc và 300.295 bản ghi Vàng.
+- **Mẫu khảo sát thăm dò ban đầu Mẫu khảo sát ban đầu:** Mẫu cắt lát **50.000 bản ghi** được thực hiện trong Ngày 1 (được trình bày tại `docs/data_profile.md`) nhằm khảo sát nhanh cấu trúc schema, kiểu dữ liệu và tỷ lệ khuyết thiếu sơ bộ trước khi viết mã nguồn ETL.
 
 ### 1.4. Ánh Xạ 6 Đặc Trưng Dữ Liệu Lớn (The 6 V's of Big Data)
 Dự án giải quyết trọn vẹn 6 đặc trưng nền tảng của bài toán Dữ liệu Lớn:
@@ -60,11 +60,11 @@ Hệ thống tuân thủ mô hình kiến trúc công nghiệp **Medallion Lakeh
 
 ```mermaid
 flowchart TD
-    HF["1. Hugging Face Hub (tinixai/vietnam-real-estates)<br/>3.500.744 bản ghi / 10 shards Parquet"] -->|"ingest_raw.py (HTTP Stream)"| BZ["2. Tầng Đồng - Bronze Zone<br/>350.075 dòng thô (153.89 MB Parquet)<br/>Audit Trail: batch_id, ingested_at"]
+    HF["1. Hugging Face Hub (tinixai/vietnam-real-estates)<br/>3.500.744 bản ghi / 10 shards Parquet"] -->|"ingest_raw.py Luồng dữ liệu mạng"| BZ["2. Tầng Đồng - Bronze Zone<br/>350.075 dòng thô (153.89 MB Parquet)<br/>Audit Trail: batch_id, ingested_at"]
     BZ -->|"clean.py (PySpark ETL 1)<br/>Khử trùng lặp & lọc null giá"| SV["3. Tầng Bạc - Silver Zone<br/>307.457 dòng sạch (130.04 MB Parquet)<br/>Tỷ lệ giữ lại: 87.83%"]
     SV -->|"features.py (PySpark ETL 2)<br/>Lọc ngoại lệ & Regex NLP"| GD["4. Tầng Vàng - Gold Zone<br/>300.295 dòng chuẩn hóa (128.20 MB Parquet)<br/>Tỷ lệ giữ lại: 97.67% (85.78% toàn trình)"]
-    GD -->|"load_postgres.py (Batch Insert)<br/>ACID Rollback & 4 B-Tree Indexes"| DB[("5. CSDL Lưu Trữ Serving<br/>PostgreSQL 15 / SQLite Fallback<br/>300.295 bản ghi (17.40 MB)")]
-    GD -->|"train.py (Holdout Split 15%)<br/>Không rò rỉ dữ liệu (Zero Leakage)"| ML["Mô Hình Định Giá Tự Động<br/>LightGBM Regressor (R² = 0.8537)<br/>Ridge Baseline L2 (R² = 0.6266)"]
+    GD -->|"load_postgres.py Nạp theo lô<br/>ACID Rollback & 4 B-Tree Indexes"| DB[("5. CSDL Lưu Trữ Serving<br/>PostgreSQL 15 / SQLite Fallback<br/>300.295 bản ghi (17.40 MB)")]
+    GD -->|"train.py (Holdout Split 15%)<br/>Không rò rỉ dữ liệu Không rò rỉ dữ liệu"| ML["Mô Hình Định Giá Tự Động<br/>LightGBM Regressor (R² = 0.8537)<br/>Ridge Baseline L2 (R² = 0.6266)"]
     DB --> APP["6. Giao Diện Người Dùng & Phục Vụ<br/>Streamlit 4-Tab Web Application<br/>Kiến trúc | Chất lượng | Thị trường | Định giá"]
     ML --> APP
 ```
@@ -73,28 +73,28 @@ flowchart TD
 
 ### 2.2. Khung Tính Toán Phân Tán Apache PySpark
 Để xử lý hàng trăm nghìn bản ghi với cấu trúc văn bản phức tạp, hệ thống sử dụng **Apache PySpark 3.5**:
-- **DataFrame API & Cây Tính Toán Lười (Lazy Evaluation):** PySpark xây dựng đồ thị có hướng không chu trình (DAG), tối ưu hóa các phép chiếu cột (`select`), lọc điều kiện (`filter`) và khử trùng (`dropDuplicates`) trước khi thực thi vật lý.
-- **Tận dụng xử lý song song đa nhân (Parallel Execution):** Tận dụng toàn bộ 12 nhân CPU (16 luồng) của phần cứng thực nghiệm để thực thi các tác vụ biến đổi dữ liệu phân tán trong bộ nhớ RAM, hạn chế tối đa việc ghi tràn ra đĩa cứng (*spill to disk*).
+- **DataFrame API & Cây Tính Toán Lười Cơ chế tính toán lười:** PySpark xây dựng đồ thị có hướng không chu trình (DAG), tối ưu hóa các phép chiếu cột (`select`), lọc điều kiện (`filter`) và khử trùng (`dropDuplicates`) trước khi thực thi vật lý.
+- **Tận dụng xử lý song song đa nhân Xử lý song song đa nhân:** Tận dụng toàn bộ 12 nhân CPU (16 luồng) của phần cứng thực nghiệm để thực thi các tác vụ biến đổi dữ liệu phân tán trong bộ nhớ RAM, hạn chế tối đa việc ghi tràn ra đĩa cứng (*spill to disk*).
 
 ### 2.3. Định Dạng Lưu Trữ Cột Apache Parquet Nén Snappy
 Hệ thống sử dụng định dạng cột **Apache Parquet** kết hợp thuật toán nén **Snappy** xuyên suốt cả 3 tầng Bronze, Silver và Gold:
-- **Cơ chế lưu trữ theo cột (Columnar Storage):** Cho phép các truy vấn phân tích chỉ đọc đúng các cột cần thiết (ví dụ: `price`, `area`, `province_name`) mà không phải nạp toàn bộ các cột văn bản dài (`description`), giảm từ 60% – 80% lưu lượng I/O đĩa.
+- **Cơ chế lưu trữ theo cột Lưu trữ định dạng cột:** Cho phép các truy vấn phân tích chỉ đọc đúng các cột cần thiết (ví dụ: `price`, `area`, `province_name`) mà không phải nạp toàn bộ các cột văn bản dài (`description`), giảm từ 60% – 80% lưu lượng I/O đĩa.
 - **Hiệu quả nén vượt trội:**
   - Tệp thô dạng CSV ước tính dung lượng: **217.01 MB**.
   - Tệp Bronze Parquet thực tế: **153.89 MB** (nén **1.41x**, tiết kiệm **29.09%** không gian đĩa).
   - Tệp Gold Parquet sau làm sạch và bổ sung đặc trưng: **128.20 MB**.
-- **Đẩy vị từ xuống tầng lưu trữ (Predicate Pushdown):** Parquet lưu trữ siêu dữ liệu thống kê min/max ở từng nhóm dòng (Row Group), giúp bộ thực thi PySpark bỏ qua hoàn toàn các khối dữ liệu không thỏa mãn điều kiện lọc.
+- **Đẩy vị từ xuống tầng lưu trữ Đẩy điều kiện lọc xuống tầng lưu trữ:** Parquet lưu trữ siêu dữ liệu thống kê min/max ở từng nhóm dòng nhóm hàng dữ liệu, giúp bộ thực thi PySpark bỏ qua hoàn toàn các khối dữ liệu không thỏa mãn điều kiện lọc.
 
-### 2.4. Tầng Lưu Trữ Phục Vụ (Serving Database) & Cam Kết ACID
+### 2.4. Tầng Lưu Trữ Phục Vụ Cơ sở dữ liệu phục vụ & Cam Kết ACID
 Dữ liệu Tầng Vàng được nạp vào cơ sở dữ liệu quan hệ phục vụ truy vấn thời gian thực:
-- **PostgreSQL 15 (với SQLite Fallback):** Hệ thống ưu tiên kết nối tới máy chủ PostgreSQL 15 chuẩn sản xuất (`src/storage/load_postgres.py`). Trong trường hợp môi trường cục bộ chưa khởi chạy container PostgreSQL, hệ thống tự động kích hoạt cơ chế dự phòng an toàn (Fallback) sang SQLite cục bộ (`data/real_estate.db`, dung lượng 17.40 MB).
-- **Cam kết giao dịch nguyên tử (ACID Rollback):** Dữ liệu được nạp theo từng lô (Batch Size = 5.000 dòng). Toàn bộ quá trình nạp được bọc trong một khối giao dịch duy nhất; nếu xảy ra bất kỳ lỗi dữ liệu hoặc sự cố mạng nào, hệ thống lập tức thực hiện lệnh `ROLLBACK` để bảo đảm tính toàn vẹn tuyệt đối, không lưu lại dữ liệu rác dở dang.
-- **Chiến lược đánh chỉ mục B-Tree (Indexes):** Tự động khởi tạo 4 chỉ mục B-Tree chuyên biệt nhằm tối ưu hóa các truy vấn lọc phân cấp:
+- **PostgreSQL 15 (với SQLite Fallback):** Hệ thống ưu tiên kết nối tới máy chủ PostgreSQL 15 chuẩn sản xuất (`src/storage/load_postgres.py`). Trong trường hợp môi trường cục bộ chưa khởi chạy container PostgreSQL, hệ thống tự động kích hoạt cơ chế dự phòng an toàn dự phòng cục bộ sang SQLite cục bộ (`data/real_estate.db`, dung lượng 17.40 MB).
+- **Cam kết giao dịch nguyên tử cơ chế hoàn tác giao dịch nguyên tử:** Dữ liệu được nạp theo từng lô (Batch Size = 5.000 dòng). Toàn bộ quá trình nạp được bọc trong một khối giao dịch duy nhất; nếu xảy ra bất kỳ lỗi dữ liệu hoặc sự cố mạng nào, hệ thống lập tức thực hiện lệnh `ROLLBACK` để bảo đảm tính toàn vẹn tuyệt đối, không lưu lại dữ liệu rác dở dang.
+- **Chiến lược đánh chỉ mục B-Tree chỉ mục B-Tree:** Tự động khởi tạo 4 chỉ mục B-Tree chuyên biệt nhằm tối ưu hóa các truy vấn lọc phân cấp:
   1. `idx_real_estate_province` trên cột `province_clean`
   2. `idx_real_estate_district` trên cột `district_clean`
   3. `idx_real_estate_prop_type` trên cột `property_type_name`
   4. `idx_real_estate_price` trên cột `price_billion`
-- **Kiểm định đối chiếu sau nạp (Reconciliation Check):** Hệ thống tự động thực thi truy vấn đối chiếu `SELECT COUNT(*) FROM real_estate_gold`. Kết quả ghi nhận **300.295 / 300.295 bản ghi**, đạt tỷ lệ khớp tuyệt đối **100.00%**.
+- **Kiểm định đối chiếu sau nạp kiểm định đối chiếu sau nạp:** Hệ thống tự động thực thi truy vấn đối chiếu `SELECT COUNT(*) FROM real_estate_gold`. Kết quả ghi nhận **300.295 / 300.295 bản ghi**, đạt tỷ lệ khớp tuyệt đối **100.00%**.
 
 ---
 
@@ -110,21 +110,21 @@ Tầng Đồng tiếp nhận dữ liệu từ Hugging Face Hub thông qua kịch
 
 ### 3.2. Làm Sạch & Khử Nhiễu (ETL 1 - Silver Zone)
 Kịch bản `src/etl/clean.py` tiếp nhận dữ liệu Tầng Đồng và thực hiện 3 bước làm sạch cốt lõi:
-1. **Khử trùng lặp đa khóa (Composite Key Deduplication):** Loại bỏ **29.686 bản ghi trùng lặp** (chiếm 8.48% tổng dữ liệu thô) dựa trên bộ khóa kết hợp: `[name, province_name, district_name, price, area]`. Điều này ngăn chặn hiện tượng mô hình học máy bị học vẹt (*overfitting*) vào các tin rao môi giới đăng lặp lại nhiều lần.
+1. **Khử trùng lặp đa khóa Khử trùng lặp đa thuộc tính:** Loại bỏ **29.686 bản ghi trùng lặp** (chiếm 8.48% tổng dữ liệu thô) dựa trên bộ khóa kết hợp: `[name, province_name, district_name, price, area]`. Điều này ngăn chặn hiện tượng mô hình học máy bị học vẹt (*overfitting*) vào các tin rao môi giới đăng lặp lại nhiều lần.
 2. **Xử lý giá trị thiếu và giá trị không hợp lệ:** Loại bỏ **12.932 bản ghi** (3.69%) có giá trị mục tiêu không thể định dạng thành số thực dương (`price_num is null or price_num <= 0`). Ép kiểu cột giá sang `DoubleType` theo đơn vị VNĐ và tạo cột `price_billion` (Tỷ VNĐ).
 3. **Điền khuyết thuộc tính kết cấu công trình:** Các cột `floor_count` (khuyết 82.50%), `bedroom_count` (khuyết 49.46%), `bathroom_count` (khuyết 52.73%) được điền giá trị miền mặc định có cơ sở khoa học là `1.0` (phản ánh thuộc tính tối thiểu của một bất động sản nhà ở).
 - **Kết quả Tầng Bạc:** Đầu ra đạt **307.457 bản ghi sạch** (23 cột, dung lượng 130.04 MB), đạt **tỷ lệ giữ lại 87.83%**.
 
 ### 3.3. Trích Xuất Đặc Trưng & Lọc Ngoại Lệ (ETL 2 - Gold Zone)
 Kịch bản `src/etl/features.py` chuẩn bị dữ liệu sẵn sàng cho phân tích và học máy:
-1. **Lọc ngoại lệ nghiệp vụ 4 tầng (Business Domain Outlier Filtering):**
+1. **Lọc ngoại lệ nghiệp vụ 4 tầng Lọc ngoại lệ nghiệp vụ:**
    - *Tầng 1 (Diện tích):* Loại bỏ 1.677 dòng có diện tích nằm ngoài khoảng $[10, 5000]\text{ m}^2$.
    - *Tầng 2 (Tổng giá):* Loại bỏ 1.104 dòng có giá nằm ngoài khoảng $[100\text{ triệu}, 500\text{ tỷ VNĐ}]$.
    - *Tầng 3 (Đơn giá/m²):* Loại bỏ 5.788 dòng có đơn giá nằm ngoài khoảng $[2\text{ triệu}, 1\text{ tỷ VNĐ/m}^2]$.
    - *Tầng 4 (Kết cấu):* Loại bỏ 450 dòng có số tầng $> 25$ hoặc số phòng ngủ $> 20$.
    - *Tổng số ngoại lệ bị loại bỏ:* **7.162 bản ghi** (2.33% dữ liệu Tầng Bạc).
 2. **Chuẩn hóa địa giới hành chính:** Làm sạch tiền tố hành chính dư thừa tại 63 Tỉnh/Thành phố và 527 Quận/Huyện (ví dụ: loại bỏ `"Thành phố "`, `"Tỉnh "`, `"Quận "`, `"Huyện "`), giúp mô hình gom cụm chính xác các thực thể địa lý.
-3. **Khai phá văn bản bằng biểu thức chính quy (Regex NLP):** Quét tiêu đề và mô tả để sinh các cờ nhị phân mang giá trị định giá cao:
+3. **Khai phá văn bản bằng biểu thức chính quy Khai phá văn bản bằng biểu thức chính quy:** Quét tiêu đề và mô tả để sinh các cờ nhị phân mang giá trị định giá cao:
    - `has_so_do`: Có sổ đỏ/sổ hồng/giấy tờ pháp lý hoàn chỉnh (chiếm 56.9% toàn thị trường).
    - `car_access`: Ngõ ô tô tránh nhau/ô tô đỗ cửa (chiếm 36.2%).
    - `is_frontage`: Nhà mặt tiền/mặt phố kinh doanh buôn bán (chiếm 50.8%).
@@ -156,32 +156,32 @@ Biểu đồ `01_pipeline_funnel_retention.png` được thiết kế 2 panel đ
 Nhằm trả lời thuyết phục hai câu hỏi phản biện then chốt của giảng viên khi bảo vệ đồ án:
 1. **Câu hỏi 1: Các trường khuyết thiếu nhiều có bị xóa, điền giá trị hay giữ nguyên?**
    - Hệ thống áp dụng 3 chiến lược xử lý rạch ròi theo bản chất nghiệp vụ của từng thuộc tính:
-     - *Chiến lược 1 (Xóa bản ghi):* **CHỈ DUY NHẤT** cột giá niêm yết `price` (khuyết 3.73% = 12.932 dòng) bị loại bỏ bản ghi vì giá là biến mục tiêu (Label) bắt buộc trong bài toán định giá hồi quy.
+     - *Chiến lược 1 (Xóa bản ghi):* **CHỈ DUY NHẤT** cột giá niêm yết `price` (khuyết 3.73% = 12.932 dòng) bị loại bỏ bản ghi vì giá là biến mục tiêu Biến mục tiêu bắt buộc trong bài toán định giá hồi quy.
      - *Chiến lược 2 (Điền giá trị miền mặc định):* Các cột kết cấu nhà ở gồm `floor_count` (khuyết 82.50%), `bedroom_count` (khuyết 49.46%), `bathroom_count` (khuyết 52.73%) được điền giá trị mặc định là `1.0` (phản ánh thuộc tính tối thiểu của một bất động sản nhà ở dân cư). Toàn bộ bản ghi thuộc nhóm này đều được giữ lại nguyên vẹn.
-     - *Chiến lược 3 (Giữ nguyên Null cho thuật toán tự phân nhánh & Khai phá NLP):* Các thuộc tính chi tiết như `house_depth` (96.54%), `road_width` (88.40%), `balcony_direction` (84.29%), `project_name` (74.44%), `house_direction` (67.64%), `street_name` (40.44%), `ward_name` (14.41%), `district_name` (1.75%) được **giữ nguyên Null**. Thuật toán Cây quyết định tăng cường độ dốc (LightGBM) có cơ chế bản địa (*Native Missing Handling*) tự động học nhánh rẽ tối ưu cho các mẫu khuyết mà không làm sai lệch phân phối hình học của mảnh đất. Song song đó, các thuộc tính vị trí ngõ/đường được trích xuất bù đắp thông qua các cờ nhị phân NLP (`car_access`, `is_frontage`).
+     - *Chiến lược 3 (Giữ nguyên Null cho thuật toán tự phân nhánh & Khai phá NLP):* Các thuộc tính chi tiết như `house_depth` (96.54%), `road_width` (88.40%), `balcony_direction` (84.29%), `project_name` (74.44%), `house_direction` (67.64%), `street_name` (40.44%), `ward_name` (14.41%), `district_name` (1.75%) được **giữ nguyên Null**. Thuật toán Cây quyết định tăng cường độ dốc LightGBM có cơ chế bản địa (*Native Missing Handling*) tự động học nhánh rẽ tối ưu cho các mẫu khuyết mà không làm sai lệch phân phối hình học của mảnh đất. Song song đó, các thuộc tính vị trí ngõ/đường được trích xuất bù đắp thông qua các cờ nhị phân NLP (`car_access`, `is_frontage`).
 2. **Câu hỏi 2: Tỷ lệ khuyết thiếu được tính trên toàn bộ 350.075 bản ghi Bronze hay trên tập nào?**
-   - Tỷ lệ phần trăm khuyết thiếu được tính toán chính xác trên **toàn bộ 350.075 bản ghi thô Tầng Đồng (Bronze Layer)**, phản ánh trung thực hiện trạng chất lượng dữ liệu ngay khi vừa tải về từ nguồn Internet.
+   - Tỷ lệ phần trăm khuyết thiếu được tính toán chính xác trên **toàn bộ 350.075 bản ghi thô Tầng Đồng Tầng Đồng**, phản ánh trung thực hiện trạng chất lượng dữ liệu ngay khi vừa tải về từ nguồn Internet.
 
 #### Bảng Đối Sánh 5 Số Thống Kê Trước và Sau Làm Sạch:
 | Chỉ Số Thống Kê | Trước Lọc Ngoại Lệ (Tầng Bạc - 307.457 dòng) | Sau Chuẩn Hóa (Tầng Vàng - 300.295 dòng) | Mức Độ Cải Thiện & Ý Nghĩa Kỹ Thuật |
 | :--- | :---: | :---: | :--- |
-| **Giá bán Trung bình (Mean)** | 25,40 Tỷ VNĐ | **14,57 Tỷ VNĐ** | Giảm 42.6%, loại bỏ việc bị kéo lệch bởi các tin nhập giá ảo |
+| **Giá bán Trung bình Giá trị trung bình** | 25,40 Tỷ VNĐ | **14,57 Tỷ VNĐ** | Giảm 42.6%, loại bỏ việc bị kéo lệch bởi các tin nhập giá ảo |
 | **Độ lệch chuẩn Giá (Std)** | 2.006,63 Tỷ VNĐ | **25,98 Tỷ VNĐ** | **Giảm 77 lần**, phương sai ổn định giúp mô hình hội tụ tốt |
 | **Giá bán Trung vị (Median P50)** | 7,20 Tỷ VNĐ | **7,30 Tỷ VNĐ** | Bảo toàn tuyệt đối trung tâm phân phối thực tế của thị trường |
 | **Khoảng Tứ phân vị Giá (Q1 – Q3)** | 3,80 – 14,90 Tỷ VNĐ | **3,90 – 14,80 Tỷ VNĐ** | 50% bất động sản đại chúng tập trung từ 3.9 đến 14.8 Tỷ |
-| **Giá trị Cực đại (Max Price)** | 881.020,0 Tỷ VNĐ | **500,0 Tỷ VNĐ** | Cắt bỏ hoàn toàn tin rác ngoại lai cực đoan |
-| **Diện tích Trung bình (Mean)** | 393,99 m² | **130,93 m²** | Loại bỏ tin nhập sai đơn vị diện tích hàng chục nghìn m² |
+| **Giá trị Cực đại Giá trị lớn nhất** | 881.020,0 Tỷ VNĐ | **500,0 Tỷ VNĐ** | Cắt bỏ hoàn toàn tin rác ngoại lai cực đoan |
+| **Diện tích Trung bình Giá trị trung bình** | 393,99 m² | **130,93 m²** | Loại bỏ tin nhập sai đơn vị diện tích hàng chục nghìn m² |
 | **Độ lệch chuẩn Diện tích (Std)** | 51.332,22 m² | **246,52 m²** | **Giảm hơn 200 lần**, đưa về kích thước khuôn viên thực tế |
 | **Diện tích Trung vị (Median P50)** | 80,00 m² | **80,00 m²** | Trùng khớp chuẩn diện tích nhà ống/căn hộ đô thị Việt Nam |
-| **Đơn giá Trung vị (Median)** | 92,39 Triệu/m² | **94,17 Triệu/m²** | Phản ánh sát mặt bằng thị trường tại 2 đô thị đặc biệt |
-| **Hệ số Bất đối xứng Giá (Skewness)**| 365,74 | **6,70** *(sau biến đổi Log: **0,24**)* | Chuyển phân phối lệch phải cực đoan về phân phối chuẩn đối xứng |
-| **Hệ số Độ nhọn Giá (Kurtosis)** | 146.454,50 | **67,17** *(sau biến đổi Log: **0,43**)* | Loại bỏ hiện tượng đuôi phân phối siêu dày gây nổ hàm mất mát |
+| **Đơn giá Trung vị Giá trị trung vị** | 92,39 Triệu/m² | **94,17 Triệu/m²** | Phản ánh sát mặt bằng thị trường tại 2 đô thị đặc biệt |
+| **Hệ số Bất đối xứng Giá Hệ số bất đối xứng**| 365,74 | **6,70** *(sau biến đổi Log: **0,24**)* | Chuyển phân phối lệch phải cực đoan về phân phối chuẩn đối xứng |
+| **Hệ số Độ nhọn Giá Hệ số độ nhọn** | 146.454,50 | **67,17** *(sau biến đổi Log: **0,43**)* | Loại bỏ hiện tượng đuôi phân phối siêu dày gây nổ hàm mất mát |
 
 ---
 
 ## CHƯƠNG 4: KHAI PHÁ DỮ LIỆU THỊ TRƯỜNG (EDA) & THỰC NGHIỆM HỌC MÁY
 
-### 4.1. Phân Tích Khai Phá Thị Trường Bất Động Sản (EDA Suite)
+### 4.1. Phân Tích Khai Phá Thị Trường Bất Động Sản Toàn cảnh khám phá dữ liệu
 Phân tích khai phá trên toàn bộ 300.295 bản ghi Tầng Vàng đem lại các thông tin kinh tế quan trọng:
 
 ![Bộ 4 Biểu Đồ Khai Phá Dữ Liệu Thị Trường](docs/images/04_market_distribution.png)
@@ -199,9 +199,9 @@ Phân tích khai phá trên toàn bộ 300.295 bản ghi Tầng Vàng đem lại
    - **Shophouse / Nhà phố thương mại:** Chiếm **1.67%** (5.029 tin), giá trung vị 8.20 Tỷ VNĐ.
 3. **Phân tích tương quan đơn giá:** Có mối tương quan tỷ lệ thuận mạnh giữa chiều rộng mặt tiền, độ rộng ngõ vào và số lượng phòng ngủ đối với đơn giá trên mỗi mét vuông, phản ánh khả năng kinh doanh và chất lượng sống vượt trội.
 
-### 4.2. Thực Nghiệm Học Máy Định Giá (Downstream ML Module)
+### 4.2. Thực Nghiệm Học Máy Định Giá Phân hệ học máy định giá
 
-#### 4.2.1. Giao Thức Chia 3 Tập Ngăn Chặn Rò Rỉ Dữ Liệu (Zero Data Leakage)
+#### 4.2.1. Giao Thức Chia 3 Tập Ngăn Chặn Rò Rỉ Dữ Liệu tuyệt đối không rò rỉ dữ liệu
 Dữ liệu Tầng Vàng (**300.295 bản ghi**) được phân chia độc lập với tỷ lệ chuẩn học thuật:
 - **Tập Huấn luyện (Train - 70% = 210.206 mẫu):** Chỉ dùng để học trọng số mô hình, khớp từ điển mã hóa (`OrdinalEncoder`) và tính trung vị điền khuyết số.
 - **Tập Kiểm định (Validation - 15% = 45.044 mẫu):** Dùng để tinh chỉnh siêu tham số điều chuẩn $\alpha$ cho Ridge và thiết lập cơ chế dừng sớm (`early_stopping_rounds=50`) cho LightGBM.
@@ -210,7 +210,7 @@ Dữ liệu Tầng Vàng (**300.295 bản ghi**) được phân chia độc lậ
 #### 4.2.2. Bảng Đối Sánh Kết Quả Thực Nghiệm Trên Tập Kiểm Thử (45.045 Mẫu)
 Biến mục tiêu khi huấn luyện là $\log(1 + \text{Giá VNĐ})$. Khi đánh giá, hệ thống chuyển đổi ngược về giá trị thực tế $\hat{y} = \exp(\hat{y}_{\log}) - 1$ theo đơn vị **Tỷ VNĐ**:
 
-| Thang Đo | Chỉ Số Đánh Giá | Hồi Quy Tuyến Tính L2 (Ridge Baseline) | Cây Quyết Định Boosting (LightGBM Regressor) | Mức Độ Cải Thiện Của LightGBM |
+| Thang Đo | Chỉ Số Đánh Giá | Hồi Quy Tuyến Tính L2 Mô hình cơ sở hồi quy Ridge | Cây Quyết Định Boosting Mô hình cây tăng cường độ dốc LightGBM | Mức Độ Cải Thiện Của LightGBM |
 | :--- | :--- | :---: | :---: | :---: |
 | **Thang Logarit** | **Hệ số xác định ($R^2$ Tập Val 15%)** | 0,6257 | **0,8515** | +36,09% |
 | **Thang Logarit** | **Hệ số xác định ($R^2$ Tập Test 15%)** | 0,6266 | **0,8537** | **+36,24% (Vượt trội)** |
@@ -226,7 +226,7 @@ Biến mục tiêu khi huấn luyện là $\log(1 + \text{Giá VNĐ})$. Khi đá
 ![Phân Tích Phần Dư & Sai Số Theo Khu Vực](docs/images/06_residual_analysis.png)
 
 #### 4.2.3. Phân Tích Ý Nghĩa Đặc Trưng & Sai Số Theo Khu Vực
-- **Thứ bậc quan trọng đặc trưng (Feature Importance):** Diện tích đất/sàn (`area` - 7.466 lần phân nhánh) và vị trí Quận/Huyện (`district_clean` - 6.996 lần phân nhánh) là hai yếu tố mang tính quyết định hàng đầu, kế tiếp là chiều rộng mặt tiền, độ rộng đường vào và các cờ nhị phân pháp lý (`has_so_do`, `car_access`, `is_frontage`).
+- **Thứ bậc quan trọng đặc trưng Tầm quan trọng của các đặc trưng:** Diện tích đất/sàn (`area` - 7.466 lần phân nhánh) và vị trí Quận/Huyện (`district_clean` - 6.996 lần phân nhánh) là hai yếu tố mang tính quyết định hàng đầu, kế tiếp là chiều rộng mặt tiền, độ rộng đường vào và các cờ nhị phân pháp lý (`has_so_do`, `car_access`, `is_frontage`).
 - **Phân tích sai số địa phương trên tập kiểm thử:**
   - Hưng Yên: $\text{MdAPE} = \mathbf{10.52\%}$ (độ chính xác cao nhất nhờ quy hoạch đại đô thị đồng bộ).
   - Hà Nội: $\text{MdAPE} = \mathbf{17.57\%}$ (sai số tuyệt đối trung vị chỉ 1.53 Tỷ trên mức giá trung vị 9.0 Tỷ).
@@ -238,14 +238,14 @@ Biến mục tiêu khi huấn luyện là $\log(1 + \text{Giá VNĐ})$. Khi đá
 
 ## CHƯƠNG 5: ĐÁNH GIÁ HIỆU NĂNG HỆ THỐNG & KIỂM THỬ TỰ ĐỘNG
 
-### 5.1. Thống Kê Hiệu Năng Toàn Trình (Pipeline Benchmark)
+### 5.1. Thống Kê Hiệu Năng Toàn Trình Đánh giá hiệu năng đường ống dữ liệu
 Thực nghiệm được đo đạc chính xác trên cấu hình phần cứng: **CPU Intel Core i5-12500H** (12 nhân vật lý, 16 luồng xử lý), **16 GB RAM DDR4**, ổ cứng thể rắn **NVMe SSD**, hệ điều hành **Windows 11**:
 
 | Giai Đoạn Pipeline | Công Nghệ Thực Thi | Thời Gian Thực Hiện | Tốc Độ Thông Lượng | Tỷ Lệ Đóng Góp Thời Gian |
 | :--- | :--- | :---: | :---: | :---: |
 | **Giai đoạn 1: Thu nạp Bronze** | Python Streams / HTTP | 35,00 giây | 10.002 bản ghi/giây | 7,75% |
-| **Giai đoạn 2: PySpark Clean (Silver)** | Apache PySpark Distributed | 50,33 giây | 6.956 bản ghi/giây | 11,15% |
-| **Giai đoạn 3: PySpark Features (Gold)**| Apache PySpark Regex NLP | 76,67 giây | 4.010 bản ghi/giây | 16,98% |
+| **Giai đoạn 2: PySpark Clean Tầng Bạc** | Apache PySpark Distributed | 50,33 giây | 6.956 bản ghi/giây | 11,15% |
+| **Giai đoạn 3: PySpark Features Tầng Vàng**| Apache PySpark Regex NLP | 76,67 giây | 4.010 bản ghi/giây | 16,98% |
 | **Giai đoạn 4: Nạp CSDL Serving (DB)** | PostgreSQL / SQLite Batch Insert | 289,43 giây | 1.038 bản ghi/giây | 64,12% |
 | **Toàn trình Pipeline (End-to-End)** | **Tự động hóa 1 lệnh** | **451,43 giây (~7,52 phút)** | **775 bản ghi/giây** | **100,00%** |
 
@@ -256,7 +256,7 @@ Thực nghiệm được đo đạc chính xác trên cấu hình phần cứng:
 #### 5.1.1. Xác Thực Kỹ Thuật Về Môi Trường & Điều Kiện Đo Lường (Defense Q&A)
 Nhằm bảo đảm tính khách quan và minh bạch học thuật trước hội đồng đánh giá:
 1. **Tính nhất quán của tổng thời gian thực thi (451,43 giây ~ 7,52 phút):**
-   - Toàn bộ số liệu thời gian được ghi nhận tự động từ **cùng một lần chạy chuẩn liên hoàn (Single Benchmark Run)**, bao gồm 4 giai đoạn cốt lõi của pipeline Dữ liệu Lớn:
+   - Toàn bộ số liệu thời gian được ghi nhận tự động từ **cùng một lần chạy chuẩn liên hoàn Đo đạc trên cùng một lần chạy chuẩn**, bao gồm 4 giai đoạn cốt lõi của pipeline Dữ liệu Lớn:
      - Giai đoạn 1 (Thu nạp Bronze): 35,00 giây (10.002 bản ghi/s)
      - Giai đoạn 2 (Làm sạch Silver): 50,33 giây (6.956 bản ghi/s)
      - Giai đoạn 3 (Trích xuất đặc trưng Gold): 76,67 giây (4.010 bản ghi/s)
@@ -267,7 +267,7 @@ Nhằm bảo đảm tính khách quan và minh bạch học thuật trước h�
 3. **Môi trường Cơ sở dữ liệu Serving đo lường thực tế:**
    - Trong quá trình đo đạc thử nghiệm cục bộ, hệ thống vận hành trên tệp **SQLite Serving Database** (`data/real_estate.db`, dung lượng thực tế **17,40 MB**). Cấu trúc bảng `real_estate_gold` và 4 chỉ mục B-Tree (`idx_real_estate_province`, `idx_real_estate_district`, `idx_real_estate_prop_type`, `idx_real_estate_price`) hoàn toàn tương đồng 1:1 với môi trường PostgreSQL 15 chuẩn sản xuất, bảo đảm khả năng di chuyển linh hoạt (*Portability*) mà không làm thay đổi logic truy vấn của ứng dụng Streamlit.
 
-### 5.2. Kết Quả Kiểm Thử Hệ Thống Tự Động (Automated Testing)
+### 5.2. Kết Quả Kiểm Thử Hệ Thống Tự Động Kiểm thử tự động
 Bộ kiểm thử tự động `tests/test_pipelines.py` được thực thi bằng công cụ **pytest**, kiểm định 10 điều kiện tiên quyết:
 
 | STT | Tên Ca Kiểm Thử | Mục Tiêu Kiểm Định | Trạng Thái | Thời Gian |
@@ -307,9 +307,9 @@ Dự án đã hoàn thành toàn diện tất cả các mục tiêu đề ra tro
 Để phục vụ phản biện học thuật nghiêm túc, nhóm nghiên cứu thừa nhận 3 giới hạn khách quan:
 1. **Phạm vi phân mảnh thực nghiệm:** Do giới hạn tài nguyên tính toán của máy trạm cá nhân trong thời gian 2 tuần, pipeline hiện tại kiểm chứng trên 1 phân mảnh đầy đủ (**350.075 bản ghi thô**). Việc mở rộng xử lý toàn bộ 10 phân mảnh (3.5 triệu bản ghi) đòi hỏi thời gian nạp cơ sở dữ liệu kéo dài từ 45 – 60 phút và cần cụm máy chủ Spark chuyên dụng.
 2. **Bản chất của giá rao bán (Asking Price vs. Transaction Price):** Dữ liệu thu thập từ các tin đăng rao bán trên Internet, phản ánh kỳ vọng của người bán. Trong thực tế, giá giao dịch công chứng tại phòng công chứng thường thấp hơn từ 5% – 15% tùy thuộc vào năng lực đàm phán và chu kỳ thị trường.
-3. **Thiếu hụt tọa độ địa lý chi tiết (GPS Coordinates):** Dữ liệu nguồn chưa tích hợp cặp tọa độ Kinh độ/Vĩ độ chính xác cho từng số nhà, làm hạn chế khả năng tính toán trực tiếp khoảng cách đến các tiện ích đô thị (bệnh viện, trường học, trạm metro).
+3. **Thiếu hụt tọa độ địa lý chi tiết tọa độ địa lý chi tiết:** Dữ liệu nguồn chưa tích hợp cặp tọa độ Kinh độ/Vĩ độ chính xác cho từng số nhà, làm hạn chế khả năng tính toán trực tiếp khoảng cách đến các tiện ích đô thị (bệnh viện, trường học, trạm metro).
 
 ### 6.3. Lộ Trình Mở Rộng Trong Tương Lai
-- **Mở rộng cụm phân tán (Spark Cluster Mode):** Triển khai mã nguồn PySpark lên cụm phân tán đa nút (Amazon EMR hoặc Databricks) để xử lý toàn bộ 3.5 triệu bản ghi và tự động cập nhật dữ liệu tin đăng mới hàng ngày.
-- **Tích hợp dịch vụ Geocoding API:** Tự động chuyển đổi tên đường, phường, quận thành tọa độ không gian để tính toán các đặc trưng không gian (Spatial Features) phục vụ định giá chuyên sâu.
+- **Mở rộng cụm phân tán cụm máy chủ Spark phân tán:** Triển khai mã nguồn PySpark lên cụm phân tán đa nút (Amazon EMR hoặc Databricks) để xử lý toàn bộ 3.5 triệu bản ghi và tự động cập nhật dữ liệu tin đăng mới hàng ngày.
+- **Tích hợp dịch vụ Geocoding API:** Tự động chuyển đổi tên đường, phường, quận thành tọa độ không gian để tính toán các đặc trưng không gian đặc trưng không gian địa lý phục vụ định giá chuyên sâu.
 - **Mô hình hóa đồ thị tri thức (Graph Neural Networks - GNN):** Khai thác đồ thị liên kết giữa các căn nhà cùng khu vực, cùng chủ đầu tư hoặc cùng tuyến đường nhằm nâng cao hơn nữa độ chính xác dự báo.
